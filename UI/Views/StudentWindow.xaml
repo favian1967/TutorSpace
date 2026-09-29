@@ -1,0 +1,59 @@
+<Window x:Class="TutorSpace.UI.Views.StudentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TutorSpace — ученик" Width="1240" Height="840" MinWidth="960" MinHeight="620"
+        WindowStartupLocation="CenterScreen" Style="{StaticResource {x:Type Window}}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="232" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Border Background="{StaticResource SidebarBackground}" BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,0,1,0">
+            <DockPanel>
+                <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="22,22,20,26">
+                    <Border Width="32" Height="32" CornerRadius="8" Background="{StaticResource Primary}">
+                        <TextBlock Text="&#xE7BE;" Style="{StaticResource Icon}" Foreground="White" FontSize="16" HorizontalAlignment="Center" />
+                    </Border>
+                    <TextBlock Text="TutorSpace" FontSize="17" FontWeight="SemiBold" Margin="10,0,0,0" VerticalAlignment="Center" />
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Bottom" Margin="12,0,12,16">
+                    <Button Style="{StaticResource GhostButton}" HorizontalContentAlignment="Left" Margin="0" Click="Logout_Click" AutomationProperties.Name="Выйти">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource NavIcon}" Text="&#xE7E8;" />
+                            <TextBlock Text="Выйти" VerticalAlignment="Center" />
+                        </StackPanel>
+                    </Button>
+                    <Border BorderBrush="{StaticResource BorderBrushSoft}" BorderThickness="0,1,0,0" Margin="0,12,0,0" Padding="4,14,4,0">
+                        <DockPanel>
+                            <Border x:Name="AvatarHost" DockPanel.Dock="Left" Margin="0,0,10,0" />
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock x:Name="UserNameText" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                                <TextBlock Text="Ученик" Foreground="{StaticResource TextMuted}" FontSize="12" />
+                            </StackPanel>
+                        </DockPanel>
+                    </Border>
+                </StackPanel>
+
+                <ListBox x:Name="Nav" Style="{StaticResource NavList}" SelectionChanged="Nav_SelectionChanged">
+                    <ListBoxItem Tag="today" AutomationProperties.Name="Сегодня">
+                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource NavIcon}" Text="&#xE80F;" /><TextBlock Text="Сегодня" /></StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="week" AutomationProperties.Name="Неделя">
+                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource NavIcon}" Text="&#xE787;" /><TextBlock Text="Неделя" /></StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="review" AutomationProperties.Name="Повторение слов">
+                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource NavIcon}" Text="&#xE8EE;" /><TextBlock Text="Повторение слов" /></StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="words" AutomationProperties.Name="Мой словарь">
+                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource NavIcon}" Text="&#xE82D;" /><TextBlock Text="Мой словарь" /></StackPanel>
+                    </ListBoxItem>
+                    <ListBoxItem Tag="profile" AutomationProperties.Name="Профиль">
+                        <StackPanel Orientation="Horizontal"><TextBlock Style="{StaticResource NavIcon}" Text="&#xE77B;" /><TextBlock Text="Профиль" /></StackPanel>
+                    </ListBoxItem>
+                </ListBox>
+            </DockPanel>
+        </Border>
+        <ContentControl x:Name="Host" Grid.Column="1" />
+    </Grid>
+</Window>

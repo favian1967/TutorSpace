@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>TutorSpace — схема базы данных</title>
+<style>
+:root{--text:#111827;--muted:#6B7280;--border:#E6E9F0;--bg:#F5F7FB}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:"Segoe UI",system-ui,Arial,sans-serif;color:var(--text);font-size:13px}
+#canvas{position:relative;width:2000px;padding:28px 40px 40px}
+h1{font-size:26px;font-weight:600;margin:0}
+.sub{color:var(--muted);margin:4px 0 18px;font-size:14px}
+.legend{display:flex;gap:22px;flex-wrap:wrap;margin-bottom:22px;color:#374151}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.sw{width:12px;height:12px;border-radius:3px;display:inline-block}
+.cols{display:grid;grid-template-columns:repeat(5,310px);column-gap:90px;position:relative;z-index:1}
+.col{display:flex;flex-direction:column;gap:22px}
+.t{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 1px 2px rgba(16,24,40,.04)}
+.t .h{padding:9px 12px 8px;color:#fff}
+.t .h b{font-size:14.5px;display:block}
+.t .h i{font-style:normal;font-size:12px;opacity:.9}
+.f{display:grid;grid-template-columns:18px 1fr auto;align-items:center;height:22px;padding:0 12px 0 8px;border-top:1px solid #F1F3F7}
+.f .k{font-size:10px;font-weight:700;text-align:center}
+.f .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.f .ty{color:var(--muted);font-size:11.5px;padding-left:8px;white-space:nowrap}
+.f.pk .n{font-weight:600}
+.f.fk .n{font-weight:600}
+svg#links{position:absolute;left:0;top:0;pointer-events:none;z-index:0}
+.note{margin-top:26px;color:#374151;line-height:1.6;max-width:1500px;font-size:13.5px}
+.note b{font-weight:600}
+</style>
+</head>
+<body>
+<div id="canvas">
+  <h1>TutorSpace — схема базы данных</h1>
+  <div class="sub">Microsoft SQL Server · база <b>TutorSpace</b> · 10 таблиц, 125 полей, 15 связей · сверено с базой 29.09.2026 · линии идут от поля-ссылки (FK) к таблице, на которую оно ссылается</div>
+  <div class="legend">
+    <span><span class="sw" style="background:#2563EB"></span>Люди и доступ</span>
+    <span><span class="sw" style="background:#0D9488"></span>План недели</span>
+    <span><span class="sw" style="background:#7C3AED"></span>Упражнения и автоматика</span>
+    <span><span class="sw" style="background:#D97706"></span>Слова и материалы</span>
+    <span><b style="color:#B45309">PK</b> первичный ключ</span>
+    <span><b style="color:#2563EB">FK</b> ссылка на другую таблицу</span>
+    <span><span style="color:var(--muted)">?</span> может быть пустым</span>
+    <span><b style="color:#7C3AED">json</b> список, хранится внутри строки</span>
+  </div>
+  <div class="cols" id="cols"></div>
+  <div class="note">
+    <b>Как объяснить за 30 секунд.</b> Есть <b>люди</b> (Users — и преподаватели, и ученики, поле Role). Преподаватель <b>связан</b> с учеником (TutorStudents).
+    Для ученика составляется <b>неделя</b> (Weeks), в неделе <b>задания</b> по дням (Tasks, DayIndex 0 = понедельник), в задании <b>упражнения</b> (Exercises),
+    ученик на них <b>отвечает</b> (Answers — каждая попытка отдельной строкой). К заданию можно добавить <b>правило</b> (Rules: «ошибся — повтори через неделю»).
+    Ещё есть <b>словарь</b> ученика (Words), <b>слово дня</b> (WordOfDay) и <b>аудиофайлы</b> (Audio).<br>
+    <b>Внутри строк (json):</b> у ученика — дни посещений; у недели — вопросы к созвону, оценки уроков, самопрезентации; у правила — журнал срабатываний;
+    у упражнения — настройки (ключ пропусков, отрезок видео), у ответа — сами ответы. <b>Шаблон недели</b> — это неделя без ученика (IsTemplate = 1).
+    Аудио лежит файлами в %LOCALAPPDATA%\TutorSpace\media, в таблице Audio — только путь и описание.
+  </div>
+</div>
+<script>
+const G = { people: "#2563EB", plan: "#0D9488", ex: "#7C3AED", words: "#D97706" };
+// [name, description, group, fields]; field: [name, type, flags] flags: P=PK, F:Target=FK, D:Target=logical link, ?=nullable
+const T = [
+  ["Users", "люди: преподаватели и ученики (+ анкета и серия ученика)", "people", [["Id","int","P"],["Username","text"],["PasswordHash","text"],["Role","Tutor / Student"],["FullName","text"],["Interests","text"],["Level","text","?"],["OnboardedAt","datetime","?"],["CurrentStreak","int"],["LongestStreak","int"],["LastActiveDate","date","?"],["LastFrozenDate","date","?"],["VisitsJson","json: дни посещений"],["CreatedAt","datetime"]]],
+  ["TutorStudents", "кто у кого учится", "people", [["Id","int","P"],["TutorId","int","F:Users"],["StudentId","int","F:Users"],["IsActive","bool"],["CreatedAt","datetime"]]],
+  ["Weeks", "неделя ученика или шаблон (неделя без ученика)", "plan", [["Id","int","P"],["TutorStudentId","int","?F:TutorStudents"],["StartDate","date (понедельник)"],["Title","text"],["TutorNotes","text"],["IsPublished","bool"],["ReviewAt","datetime","?"],["IntroRequired","bool"],["IsTemplate","bool"],["TutorId","int","?F:Users"],["Name","text (имя шаблона)"],["Description","text"],["TimesUsed","int"],["CallQuestionsJson","json: вопросы к созвону"],["LessonReviewsJson","json: оценки уроков"],["IntrosJson","json: самопрезентации"],["CreatedAt","datetime"],["UpdatedAt","datetime"]]],
+  ["Tasks", "задание на день (+ выполнение учеником)", "plan", [["Id","int","P"],["WeekId","int","F:Weeks"],["DayIndex","int 0–6"],["Title","text"],["Description","text"],["Url","text"],["MissionKind","text"],["Mission","text"],["EstimatedMinutes","int"],["DeferredDays","int"],["RepeatOfId","int","?F:Tasks"],["Provider","text"],["ExternalId","text"],["PreviewTitle","text"],["PreviewThumbnail","text"],["Order","int"],["IsCompleted","bool"],["CompletedAt","datetime","?"],["MissionResponse","text"],["StudentComment","text"],["ProgressUpdatedAt","datetime"],["CreatedAt","datetime"],["UpdatedAt","datetime"]]],
+  ["Exercises", "упражнение внутри задания", "ex", [["Id","int","P"],["TaskId","int","F:Tasks"],["Kind","тип: 5 видов"],["Prompt","text"],["Instruction","text"],["ConfigJson","json: настройки"],["AudioId","int","?F:Audio"],["Order","int"],["CreatedAt","datetime"]]],
+  ["Answers", "попытка ученика в упражнении", "ex", [["Id","int","P"],["ExerciseId","int","F:Exercises"],["StudentId","int","F:Users"],["AttemptNo","int"],["AnswersJson","json: ответы"],["AudioId","int","?F:Audio"],["Score","int"],["MaxScore","int"],["IsAutoChecked","bool"],["TutorComment","text"],["CreatedAt","datetime"]]],
+  ["Rules", "правило задания (+ журнал срабатываний)", "ex", [["Id","int","P"],["TaskId","int","F:Tasks"],["Trigger","Failed / Passed / Done"],["Action","Repeat / Flag"],["ThresholdPercent","int"],["Days","int"],["Note","text"],["IsActive","bool"],["FireOnce","bool"],["FiresJson","json: журнал"],["CreatedAt","datetime"]]],
+  ["Words", "личный словарь ученика", "words", [["Id","int","P"],["StudentId","int","F:Users"],["Word","text"],["Translation","text"],["Example","text"],["IsLearned","bool"],["EaseFactor","float"],["IntervalDays","int"],["Repetitions","int"],["Lapses","int"],["NextReviewOn","date","?"],["LastReviewedAt","datetime","?"],["ReviewCount","int"],["Status","New / Learning / Mastered"],["CreatedAt","datetime"]]],
+  ["WordOfDay", "слово дня от преподавателя", "words", [["Id","int","P"],["TutorId","int","F:Users"],["Date","date"],["Word","text"],["Translation","text"],["Example","text"],["CreatedAt","datetime"]]],
+  ["Audio", "аудиофайлы (аудиотека и записи)", "words", [["Id","int","P"],["OwnerId","int","F:Users"],["Source","TutorClip / Recording"],["StoredPath","text"],["Title","text"],["Transcript","text"],["Origin","text"],["OriginalName","text"],["SizeBytes","bigint"],["DurationSeconds","int"],["CreatedAt","datetime"]]],
+];
+const LAYOUT = [
+  ["Words", "WordOfDay"],
+  ["Users", "TutorStudents"],
+  ["Weeks", "Audio"],
+  ["Tasks"],
+  ["Exercises", "Answers", "Rules"],
+];
+const byName = Object.fromEntries(T.map(t => [t[0], t]));
+const cols = document.getElementById("cols");
+for (const names of LAYOUT) {
+  const col = document.createElement("div");
+  col.className = "col";
+  for (const n of names) {
+    const [name, desc, group, fields] = byName[n];
+    const el = document.createElement("div");
+    el.className = "t"; el.id = "t-" + name;
+    el.innerHTML = `<div class="h" style="background:${G[group]}"><b>${name}</b><i>${desc}</i></div>` + fields.map(([f, ty, fl = ""]) => {
+      const pk = fl === "P", fk = /F:|D:/.test(fl), nul = fl.includes("?");
+      const tag = pk ? `<span class="k" style="color:#B45309">PK</span>` : fk ? `<span class="k" style="color:${fl.includes("D:") ? "#9CA3AF" : "#2563EB"}">FK</span>` : `<span></span>`;
+      return `<div class="f ${pk ? "pk" : fk ? "fk" : ""}" id="f-${name}-${f}">${tag}<span class="n">${f}${nul ? '<span style="color:#6B7280"> ?</span>' : ""}</span><span class="ty"${ty.startsWith("json") ? ' style="color:#7C3AED;font-weight:600"' : ""}>${ty}</span></div>`;
+    }).join("");
+    col.appendChild(el);
+  }
+  cols.appendChild(col);
+}
+// Links: from the FK row to the target table's header.
+const canvas = document.getElementById("canvas");
+const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+svg.id = "links";
+svg.setAttribute("width", canvas.scrollWidth);
+svg.setAttribute("height", canvas.scrollHeight);
+canvas.appendChild(svg);
+const base = canvas.getBoundingClientRect();
+const box = el => { const r = el.getBoundingClientRect(); return { l: r.left - base.left, r: r.right - base.left, t: r.top - base.top, b: r.bottom - base.top, cy: (r.top + r.bottom) / 2 - base.top }; };
+for (const [name, , group, fields] of T) {
+  for (const [f, , fl = ""] of fields) {
+    const m = fl.match(/([FD]):(\w+)/);
+    if (!m) continue;
+    const from = box(document.getElementById(`f-${name}-${f}`));
+    const to = box(document.getElementById("t-" + m[2]));
+    const head = to.t + 22;
+    let x1, x2, d;
+    if (m[2] === name) { // self-reference: loop on the right side
+      x1 = from.r; const y = head;
+      d = `M${x1},${from.cy} C${x1 + 60},${from.cy} ${x1 + 60},${y} ${x1},${y}`;
+    } else {
+      const right = to.l > from.r - 5;
+      x1 = right ? from.r : from.l;
+      x2 = right ? to.l : to.r;
+      if (Math.abs(to.l - from.l) < 5) { x1 = from.r; x2 = to.r; } // same column
+      const dx = Math.max(40, Math.abs(x2 - x1) / 2), s1 = x1 === from.r ? 1 : -1, s2 = x2 === to.l ? -1 : 1;
+      d = `M${x1},${from.cy} C${x1 + s1 * dx},${from.cy} ${x2 + s2 * dx},${head} ${x2},${head}`;
+    }
+    const color = G[byName[m[2]][2]];
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", d); p.setAttribute("fill", "none"); p.setAttribute("stroke", m[1] === "D" ? "#9CA3AF" : color);
+    p.setAttribute("stroke-width", "1.8"); p.setAttribute("stroke-opacity", ".75");
+    if (m[1] === "D") p.setAttribute("stroke-dasharray", "5 4");
+    svg.appendChild(p);
+    const end = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    const ex = m[2] === name ? x1 : x2;
+    end.setAttribute("cx", ex); end.setAttribute("cy", m[2] === name ? head : head); end.setAttribute("r", 3.5);
+    end.setAttribute("fill", m[1] === "D" ? "#9CA3AF" : color);
+    svg.appendChild(end);
+  }
+}
+</script>
+</body>
+</html>

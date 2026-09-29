@@ -1,0 +1,8 @@
+bin/
+obj/
+.vs/
+*.user
+
+# build output (published as GitHub Release)
+Выпуск/
+Скриншоты.zip

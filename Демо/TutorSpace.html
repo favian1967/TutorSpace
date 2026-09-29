@@ -1,0 +1,1499 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TutorSpace — демо</title>
+<style>
+:root{
+  --primary:#2563EB;--primary-dark:#1D4ED8;--primary-soft:#EEF3FF;--primary-border:#C7D7FE;
+  --bg:#F5F7FB;--surface:#fff;--surface-muted:#F8F9FC;--border:#E6E9F0;--border-strong:#D5DAE3;
+  --text:#111827;--text2:#374151;--muted:#6B7280;--faint:#9CA3AF;
+  --success:#16A34A;--success-soft:#E9F7EF;--danger:#DC2626;--danger-soft:#FDEEEE;
+  --warning:#B45309;--warning-soft:#FEF5E4;--violet:#7C3AED;--violet-soft:#F3EEFF;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:14px;color:var(--text);background:var(--bg);-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+h1{font-size:26px;font-weight:600;margin:0}
+h2{font-size:17px;font-weight:600;margin:0}
+h3{font-size:15px;font-weight:600;margin:0}
+.muted{color:var(--muted)}.small{font-size:12.5px}.xs{font-size:12px}.faint{color:var(--faint)}
+.row{display:flex;align-items:center;gap:8px}.wrap{flex-wrap:wrap}.col{display:flex;flex-direction:column}
+.grow{flex:1;min-width:0}.between{justify-content:space-between}.top{align-items:flex-start}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.ellipsis{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+svg.i{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* Layout */
+.shell{display:grid;grid-template-columns:232px 1fr;height:100vh}
+.side{background:#fff;border-right:1px solid var(--border);display:flex;flex-direction:column;min-height:0}
+.logo{display:flex;align-items:center;gap:10px;padding:22px 20px 26px 22px;font-size:17px;font-weight:600}
+.logo .mark{width:32px;height:32px;border-radius:8px;background:var(--primary);color:#fff;display:grid;place-items:center}
+.nav{padding:0 12px;flex:1;overflow:auto}
+.nav a{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:8px;color:var(--text2);text-decoration:none;cursor:pointer;margin:1px 0;user-select:none}
+.nav a:hover{background:#F3F5F9}
+.nav a.on{background:var(--primary-soft);color:var(--primary);font-weight:600}
+.side-foot{padding:0 12px 16px}
+.usercard{display:flex;align-items:center;gap:10px;border-top:1px solid var(--border);margin-top:12px;padding:14px 4px 0}
+.main{overflow:auto;min-width:0}
+.page{padding:28px 32px 32px;max-width:1120px}
+.page.wide{max-width:none}
+
+/* Controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:34px;padding:6px 14px;border-radius:8px;border:1px solid var(--border-strong);background:#fff;cursor:pointer;white-space:nowrap;transition:background .1s,filter .1s}
+.btn:hover{background:#F6F7FA}.btn:active{filter:brightness(.96)}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}.btn.primary:hover{background:var(--primary-dark)}
+.btn.soft{background:var(--primary-soft);border-color:var(--primary-soft);color:var(--primary);font-weight:600}.btn.soft:hover{filter:brightness(.97)}
+.btn.danger{color:var(--danger)}
+.btn.ghost{border-color:transparent;background:transparent;color:var(--text2);justify-content:flex-start;width:100%}.btn.ghost:hover{background:#F3F5F9}
+.btn.icon{width:34px;padding:0;color:var(--text2)}.btn.icon.danger{color:var(--danger)}
+.btn.block{width:100%}.btn.lg{min-height:40px}
+.link{color:var(--primary);cursor:pointer;background:none;border:0;padding:0}.link:hover{text-decoration:underline}
+.input,select.input,textarea.input{width:100%;min-height:36px;padding:7px 10px;border:1px solid var(--border-strong);border-radius:8px;background:#fff;outline:none}
+.input:hover{border-color:#BFC6D3}.input:focus{border-color:var(--primary)}
+textarea.input{min-height:72px;resize:vertical;line-height:1.4}
+select.input{appearance:none;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='M5 9l7 7 7-7'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+.label{display:block;font-size:12.5px;font-weight:600;color:var(--text2);margin:12px 0 6px}
+input[type=checkbox],input[type=radio]{appearance:none;width:18px;height:18px;border:1.5px solid #BFC6D3;background:#fff;margin:1px 0 0;cursor:pointer;flex:none;display:inline-grid;place-content:center}
+input[type=checkbox]{border-radius:5px}input[type=radio]{border-radius:50%}
+input[type=checkbox]:hover,input[type=radio]:hover{border-color:var(--primary)}
+input[type=checkbox]:checked{background:var(--primary) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 8.5l2.5 2.5L12 5'/%3E%3C/svg%3E") center/14px no-repeat;border-color:var(--primary)}
+input[type=radio]:checked{background:radial-gradient(circle,#fff 3.5px,var(--primary) 4px);border-color:var(--primary)}
+.check{display:flex;gap:10px;align-items:flex-start;cursor:pointer;margin:5px 0;line-height:1.35}
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px}
+.card.tight{padding:12px 16px;margin-bottom:8px}
+.card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.chip{display:inline-flex;align-items:center;border-radius:6px;padding:3px 8px;font-size:12px;font-weight:600;white-space:nowrap}
+.chip.blue{background:var(--primary-soft);color:var(--primary)}.chip.green{background:var(--success-soft);color:var(--success)}
+.chip.red{background:var(--danger-soft);color:var(--danger)}.chip.amber{background:var(--warning-soft);color:var(--warning)}
+.chip.gray{background:var(--surface-muted);color:var(--muted)}.chip.violet{background:var(--violet-soft);color:var(--violet)}
+.chip.sm{font-size:11px;padding:1px 6px 2px}
+.badge{display:grid;place-items:center;border-radius:9px;flex:none}
+.badge.blue{background:var(--primary-soft);color:var(--primary)}.badge.red{background:var(--danger-soft);color:var(--danger)}
+.badge.green{background:var(--success-soft);color:var(--success)}.badge.violet{background:var(--violet-soft);color:var(--violet)}
+.avatar{border-radius:50%;background:var(--primary-soft);color:var(--primary);font-weight:600;display:grid;place-items:center;flex:none}
+.grid2{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}.grid2b{display:grid;grid-template-columns:1.45fr 1fr;gap:16px}
+.grid2>.card,.grid2b>.card{margin-bottom:16px}
+.tiles{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.tile{width:230px;margin:0}.tile .v{font-size:26px;font-weight:600;margin-top:8px}
+.sep{border-top:1px solid var(--border)}
+.dot{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border-strong);background:#fff;display:grid;place-items:center;flex:none}
+.dot.done{background:var(--success);border-color:var(--success);color:#fff}
+.dot svg{width:11px;height:11px;stroke-width:3}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.tabs a{padding:10px 14px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a:hover{color:var(--text)}.tabs a.on{color:var(--primary);border-bottom-color:var(--primary);font-weight:600}
+.progress{height:8px;border-radius:4px;background:#E8ECF4;overflow:hidden}.progress>i{display:block;height:100%;background:var(--primary);border-radius:4px}
+table.t{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{background:var(--surface-muted);color:var(--muted);font-size:12px;font-weight:600;text-align:left;padding:9px 12px;border-bottom:1px solid var(--border)}
+table.t td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+
+/* Today */
+.strip{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:16px}
+.day{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 6px 8px;text-align:center;cursor:pointer}
+.day:hover{border-color:var(--primary-border)}
+.day .n{font-size:19px;font-weight:600;height:26px;display:grid;place-items:center}
+.day.today{background:var(--primary);border-color:var(--primary);color:#fff}.day.today .muted{color:#fff}
+.day .mark{height:4px;width:18px;border-radius:2px;margin:4px auto 0}
+.tasks .t{display:flex;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--border);cursor:pointer}
+.tasks .t:first-child{border-top:0}
+.ring{position:relative;width:112px;height:112px;flex:none}.ring .c{position:absolute;inset:0;display:grid;place-items:center;text-align:center}
+
+/* Assignment */
+.material{display:flex;align-items:center;gap:12px;background:var(--surface-muted);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-top:14px}
+.mission{background:var(--primary-soft);border-radius:10px;padding:16px;margin-top:14px}
+.exblock{border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:10px;background:#fff}
+.gapline{display:flex;flex-wrap:wrap;align-items:center;gap:4px 5px;font-size:15px;margin-top:8px}
+.gapline input{width:120px;min-height:34px}
+.gapline input.ok{background:var(--success-soft)}.gapline input.bad{background:var(--danger-soft)}
+.reveal{background:var(--primary-soft);border-radius:8px;padding:12px;margin-top:8px;white-space:pre-wrap}
+.rec{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:6px}
+
+/* Board */
+.board{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px}
+.bcol{background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px 6px}
+.bcol.today{background:var(--primary-soft);border-color:var(--primary-border)}
+.bcol .h{text-align:center;margin-bottom:10px}
+.bcard{background:#fff;border:1px solid var(--border);border-radius:10px;padding:9px 8px;margin-bottom:8px;cursor:pointer}
+.bcard:hover{border-color:var(--primary-border)}
+.bcard .title{font-weight:600;font-size:13px;margin-top:6px;overflow-wrap:normal;word-break:normal;hyphens:none}
+.addslot{border:1px dashed var(--border-strong);border-radius:10px;min-height:40px;display:flex;align-items:center;justify-content:center;gap:6px;color:var(--muted);font-size:12.5px;cursor:pointer}
+.addslot:hover{border-color:var(--primary);color:var(--primary)}
+
+/* Login */
+.login{min-height:100vh;display:grid;place-items:center;padding:32px 16px}
+.login .box{width:440px;max-width:100%}
+
+/* Modal & toast */
+.overlay{position:fixed;inset:0;background:rgba(17,24,39,.35);display:grid;place-items:center;padding:24px}
+.modal{background:var(--bg);border-radius:14px;width:460px;max-width:100%;max-height:calc(100vh - 48px);display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal.wide{width:780px}.modal.mid{width:640px}
+.modal .mb{padding:20px 22px;overflow:auto}
+.modal .mf{padding:12px 22px 18px;display:flex;justify-content:flex-end;gap:8px}
+.modal .mh{padding:18px 22px 0;display:flex;justify-content:space-between;align-items:center}
+.toasts{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:9999}
+.toast{background:#111827;color:#fff;border-radius:10px;padding:10px 14px;max-width:380px;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:in .15s ease-out}
+.toast.warn{background:#7C2D12}.toast.ok{background:#14532D}
+@keyframes in{from{transform:translateY(8px);opacity:0}}
+.demo-note{position:fixed;left:0;right:0;top:0;background:#111827;color:#E5E7EB;font-size:12px;padding:4px 12px;text-align:center;z-index:50;display:none}
+@media (max-width:900px){.shell{grid-template-columns:1fr}.side{display:none}.grid2,.grid2b{grid-template-columns:1fr}.board{grid-template-columns:repeat(2,1fr)}.page{padding:20px 16px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modals"></div>
+<div class="toasts" id="toasts"></div>
+<input type="file" id="filepick" accept="audio/*" multiple hidden>
+<script>
+"use strict";
+/* ================= Utilities ================= */
+const KEY = "tutorspace-demo-v1";
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => Math.random().toString(36).slice(2, 10);
+const pad = n => String(n).padStart(2, "0");
+const iso = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const parse = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
+const addDays = (s, n) => { const d = parse(s); d.setDate(d.getDate() + n); return iso(d); };
+const dayIdx = s => (parse(s).getDay() + 6) % 7;
+const mondayOf = s => addDays(s, -dayIdx(s));
+const TODAY = iso(new Date());
+const dm = s => { const d = parse(s); return `${pad(d.getDate())}.${pad(d.getMonth() + 1)}`; };
+const dmy = s => `${dm(s)}.${parse(s).getFullYear()}`;
+const weekLabel = m => `${dm(m)} — ${dmy(addDays(m, 6))}`;
+const nowStr = () => { const d = new Date(); return `${dm(iso(d))} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+const MONTHS = ["января","февраля","марта","апреля","мая","июня","июля","августа","сентября","октября","ноября","декабря"];
+const DAYS = ["Понедельник","Вторник","Среда","Четверг","Пятница","Суббота","Воскресенье"];
+const DSHORT = ["Пн","Вт","Ср","Чт","Пт","Сб","Вс"];
+function plural(n, one, few, many) {
+  const m10 = n % 10, m100 = n % 100;
+  const w = m10 === 1 && m100 !== 11 ? one : m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20) ? few : many;
+  return `${n} ${w}`;
+}
+const initials = name => { const p = name.trim().split(/\s+/); return (p[0]?.[0] ?? "?").toUpperCase() + (p[1]?.[0] ?? "").toUpperCase(); };
+const norm = s => s.trim().toLowerCase().replace(/[’`]/g, "'").replace(/\s+/g, " ");
+const clone = o => JSON.parse(JSON.stringify(o));
+const words = s => s.trim().split(/\s+/).filter(Boolean).length;
+
+/* ================= Icons ================= */
+const P = {
+  home:'<path d="M3 10.5 12 3l9 7.5V21h-6v-6H9v6H3z"/>',
+  calendar:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/>',
+  repeat:'<path d="M17 2l4 4-4 4"/><path d="M3 11V9a3 3 0 0 1 3-3h15"/><path d="M7 22l-4-4 4-4"/><path d="M21 13v2a3 3 0 0 1-3 3H3"/>',
+  book:'<path d="M4 4h11a3 3 0 0 1 3 3v14H7a3 3 0 0 1-3-3z"/><path d="M4 18a3 3 0 0 1 3-3h11"/>',
+  user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',
+  users:'<circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M16 4a4 4 0 0 1 0 8M22 21a7 7 0 0 0-4-6.3"/>',
+  file:'<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/>',
+  code:'<path d="M8 6l-6 6 6 6M16 6l6 6-6 6"/>',
+  music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  star:'<path d="M12 3l2.8 5.7 6.2.9-4.5 4.4 1 6.2L12 17.3 6.5 20.2l1-6.2L3 9.6l6.2-.9z"/>',
+  lock:'<rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>',
+  logout:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/>',
+  cap:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+  play:'<path d="M7 4l13 8-13 8z"/>', stop:'<rect x="6" y="6" width="12" height="12" rx="1"/>',
+  mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/>',
+  video:'<rect x="2" y="6" width="14" height="12" rx="2"/><path d="M16 10l6-3v10l-6-3z"/>',
+  link:'<path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/>',
+  open:'<path d="M14 3h7v7M21 3l-9 9"/><path d="M19 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/>',
+  plus:'<path d="M12 5v14M5 12h14"/>', edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/>',
+  trash:'<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  check:'<path d="M5 12l5 5 9-10"/>', clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  chevL:'<path d="M15 5l-7 7 7 7"/>', chevR:'<path d="M9 5l7 7-7 7"/>', chevD:'<path d="M5 9l7 7 7-7"/>',
+  arrowL:'<path d="M19 12H5M11 6l-6 6 6 6"/>', arrowR:'<path d="M5 12h14M13 6l6 6-6 6"/>',
+  bolt:'<path d="M13 2L4 14h7l-1 8 9-12h-7z"/>',
+  copy:'<rect x="8" y="8" width="13" height="13" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/>',
+  save:'<path d="M5 3h11l5 5v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M7 3v6h8M7 21v-7h10v7"/>',
+  flag:'<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>', text:'<path d="M4 7V5h16v2M9 19h6M12 5v14"/>',
+  list:'<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>',
+  wave:'<path d="M3 10v4M7 7v10M11 4v16M15 8v8M19 11v2"/>', upload:'<path d="M12 16V4M6 10l6-6 6 6M4 20h16"/>',
+  x:'<path d="M6 6l12 12M18 6L6 18"/>',
+};
+const ic = (n, size) => `<svg class="i" viewBox="0 0 24 24"${size ? ` style="width:${size}px;height:${size}px"` : ""}>${P[n]}</svg>`;
+const badge = (n, color, size = 36) => `<span class="badge ${color}" style="width:${size}px;height:${size}px;border-radius:${size / 4}px">${ic(n, Math.round(size * .45))}</span>`;
+const avatar = (name, size = 36) => `<span class="avatar" style="width:${size}px;height:${size}px;font-size:${Math.round(size * .38)}px">${esc(initials(name))}</span>`;
+const chip = (t, c = "blue", sm = "") => `<span class="chip ${c} ${sm}">${esc(t)}</span>`;
+const btn = (label, a, o = {}) => `<button class="btn ${o.cls || ""}" data-a="${a}"${o.d ? Object.entries(o.d).map(([k, v]) => ` data-${k}="${esc(v)}"`).join("") : ""}${o.title ? ` title="${esc(o.title)}"` : ""}${o.disabled ? " disabled" : ""}>${o.icon ? ic(o.icon) : ""}${label ? `<span>${esc(label)}</span>` : ""}</button>`;
+const ibtn = (icon, a, title, d, danger) => btn("", a, { cls: "icon" + (danger ? " danger" : ""), icon, title, d });
+
+/* ================= Domain ================= */
+const KINDS = {
+  gap: { label: "Вставить пропущенные слова", icon: "text", color: "blue" },
+  open: { label: "Ответить на вопрос", icon: "list", color: "blue" },
+  theses: { label: "Тезисы по отрезку видео", icon: "video", color: "red" },
+  speak: { label: "Повторить за оригиналом", icon: "wave", color: "green" },
+  mono: { label: "Голосовой монолог", icon: "mic", color: "violet" },
+};
+const MISSIONS = {
+  Words: ["Поймать новые слова", "Поймай 3 новых слова и запиши их"],
+  Sentence: ["Ответить одним предложением", "Ответь одним предложением: о чём это было?"],
+  Voice: ["Записать голосовое", "Запиши голосовое на 15 секунд"],
+  Retell: ["Пересказать своими словами", "Перескажи своими словами в 2–3 предложениях"],
+  Custom: ["Своя формулировка", ""],
+};
+const TRIGGERS = { failed: "Ошибся в упражнении", passed: "Справился с упражнением", done: "Закрыл задание" };
+const ACTIONS = { repeat: "Повторить через N дней", flag: "Отметить мне" };
+const INTERESTS = [["FOOTBALL","Футбол"],["GAMES","Игры"],["MOVIES","Фильмы"],["CARTOONS","Мультики"],["NEWS","Новости"],["IT","IT"]];
+const LEVELS = { Beginner: "Новичок", Intermediate: "Средний", Confident: "Уверенный" };
+const GRADES = [["again","Снова"],["hard","Трудно"],["good","Хорошо"],["easy","Легко"]];
+
+function parseGaps(text) {
+  const blanks = [];
+  const template = text.replace(/\{\{(.+?)\}\}/g, (_, body) => {
+    const [ans, hint = ""] = body.split("::");
+    blanks.push({ answers: ans.split("|").map(s => s.trim()).filter(Boolean), hint: hint.trim() });
+    return "____";
+  });
+  return { template, blanks };
+}
+function newEx(kind, prompt, cfg = {}) {
+  return { id: uid(), kind, prompt, instruction: cfg.instruction || "", audio: cfg.audio || null,
+    cfg: { segStart: "", segEnd: "", reference: [], minTheses: 3, maxTheses: 5, minWords: 0, sample: "", transcript: "", attempts: null, ...cfg }, attempts: [] };
+}
+function newAsg(plan, day, f) {
+  return { id: uid(), plan, day, title: f.title || "Без названия", desc: f.desc || "", url: f.url || "", missionKind: f.missionKind || "Sentence",
+    mission: f.mission ?? "", minutes: f.minutes ?? 10, deferred: 0, repeatOf: null, order: Date.now() + Math.random(),
+    progress: { done: false, doneAt: null, mission: "", comment: "" }, exercises: f.exercises || [], rules: f.rules || [] };
+}
+function exampleWeek() {
+  return {
+    title: "", notes: "", intro: false, questions: [],
+    assignments: [
+      { day: 0, title: "Смотрим отрезок про семью", url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ", minutes: 15, missionKind: "Custom",
+        mission: "поймай 3 новых слова", desc: "Смотри без субтитров, потом сверимся.",
+        rules: [{ id: uid(), trigger: "done", action: "repeat", threshold: 100, days: 7, note: "", once: true, active: true }],
+        exercises: [newEx("gap", "He {{went|did go}} to school yesterday."), newEx("open", "What does he do for a living?"),
+          newEx("theses", "Посмотрите отрезок 13:23 — 14:44 и выпишите 3–5 тезисов.", { segStart: "13:23", segEnd: "14:44", reference: ["he has 10 kids", "he lives in Texas", "he loves his job"] })] },
+      { day: 2, title: "Произношение", minutes: 10, exercises: [newEx("speak", "Послушай и повтори за оригиналом.", { transcript: "I'll be back" })] },
+      { day: 4, title: "Итоги недели", minutes: 10, exercises: [newEx("mono", "Расскажи, что нового ты узнал за неделю.")] },
+    ],
+  };
+}
+function seed() {
+  const S = { users: [], enroll: [], profiles: {}, plans: [], asg: [], vocab: [], wod: [], media: [], templates: [], fires: [], session: null };
+  S.users.push({ id: "t1", role: "tutor", login: "tutor", pass: "1234", name: "Анна Викторовна" });
+  S.users.push({ id: "s1", role: "student", login: "student", pass: "1234", name: "Иван Петров" });
+  S.enroll.push({ id: "e1", tutor: "t1", student: "s1", active: true });
+  S.profiles.s1 = { interests: [], level: null, onboarded: false, streak: 0, longest: 0, last: null, visits: {} };
+  const m = mondayOf(TODAY);
+  const payload = exampleWeek();
+  payload.title = "Семья и профессии";
+  payload.questions = ["Что было самым трудным на этой неделе?", "Какие новые слова запомнились?"];
+  materialize(S, "e1", m, payload);
+  S.templates.push({ id: uid(), tutor: "t1", name: "Базовая неделя", desc: "Видео + пропуски + монолог", payload: stripPayload(S, planOf(S, "e1", m)), used: 0, updated: TODAY });
+  const plan = planOf(S, "e1", m);
+  if (!S.asg.some(a => a.plan === plan.id && a.day === dayIdx(TODAY))) {
+    S.asg.push(newAsg(plan.id, dayIdx(TODAY), { title: "Разминка дня", desc: "Короткое упражнение на сегодня.", mission: "Напиши одно предложение о своём дне", minutes: 5,
+      exercises: [newEx("gap", "I {{am|'m}} a student and I {{like|love}} English.")] }));
+  }
+  for (const [w, t, e] of [["family", "семья", "My family is big."], ["to earn", "зарабатывать", "He earns a lot."], ["job", "работа", "I love my job."]])
+    addWord(S, "s1", w, t, e);
+  S.wod.push({ id: uid(), tutor: "t1", date: TODAY, word: "curious", tr: "любопытный", ex: "Cats are curious animals." });
+  return S;
+}
+function planOf(S, enroll, monday) { return S.plans.find(p => p.enroll === enroll && p.monday === monday); }
+function createPlan(S, enroll, monday, title = "") {
+  const p = { id: uid(), enroll, monday, title, notes: "", published: true, intro: false, reviewAt: null, questions: [], reviews: {}, intros: [] };
+  S.plans.push(p);
+  return p;
+}
+function materialize(S, enroll, monday, payload, replace) {
+  let plan = planOf(S, enroll, monday);
+  if (plan && replace) { deletePlanAssignments(S, plan.id); plan.questions = []; }
+  if (!plan) plan = createPlan(S, enroll, monday, payload.title);
+  if (payload.title) plan.title = payload.title;
+  plan.notes = payload.notes || plan.notes;
+  plan.intro = !!payload.intro;
+  for (const q of payload.questions || []) plan.questions.push({ id: uid(), text: q, asked: false });
+  for (const a of payload.assignments) {
+    const src = clone(a);
+    S.asg.push(newAsg(plan.id, src.day, { ...src,
+      exercises: (src.exercises || []).map(e => ({ ...newEx(e.kind, e.prompt, e.cfg), instruction: e.instruction || "", audio: e.audio || null })),
+      rules: (src.rules || []).map(r => ({ ...r, id: uid() })) }));
+  }
+  return plan;
+}
+function stripPayload(S, plan) {
+  return { title: plan.title, notes: plan.notes, intro: plan.intro, questions: plan.questions.map(q => q.text),
+    assignments: S.asg.filter(a => a.plan === plan.id).map(a => ({ day: a.day, title: a.title, desc: a.desc, url: a.url, missionKind: a.missionKind, mission: a.mission, minutes: a.minutes,
+      exercises: a.exercises.map(e => ({ kind: e.kind, prompt: e.prompt, instruction: e.instruction, audio: e.audio, cfg: e.cfg })), rules: a.rules.map(r => ({ ...r })) })) };
+}
+function deletePlanAssignments(S, planId) {
+  const ids = S.asg.filter(a => a.plan === planId).map(a => a.id);
+  S.asg = S.asg.filter(a => a.plan !== planId);
+  for (const a of S.asg) if (ids.includes(a.repeatOf)) a.repeatOf = null;
+  for (const f of S.fires) if (ids.includes(f.created)) f.created = null;
+}
+function addWord(S, student, word, tr, ex) {
+  word = word.trim(); tr = tr.trim();
+  if (!word || !tr) throw new Error("Нужны слово и перевод.");
+  if (S.vocab.some(v => v.student === student && v.word.toLowerCase() === word.toLowerCase())) throw new Error("Такое слово уже есть в словаре.");
+  S.vocab.push({ id: uid(), student, word, tr, ex: (ex || "").trim(), learned: false, ease: 2.5, interval: 0, reps: 0, lapses: 0, next: TODAY, reviews: 0, lastAt: null, added: TODAY });
+}
+const release = a => addDays(planById(a.plan).monday, a.day + a.deferred);
+const planned = a => addDays(planById(a.plan).monday, a.day);
+const unlocked = a => planById(a.plan).published && release(a) <= TODAY;
+function planById(id) { return S.plans.find(p => p.id === id); }
+function user(id) { return S.users.find(u => u.id === id); }
+function enrollById(id) { return S.enroll.find(e => e.id === id); }
+function studentPlans(student, monday) {
+  const ids = S.enroll.filter(e => e.student === student && e.active).map(e => e.id);
+  return S.plans.filter(p => ids.includes(p.enroll) && p.monday === monday);
+}
+function asgOf(plan) { return S.asg.filter(a => a.plan === plan.id).sort((a, b) => a.day - b.day || a.order - b.order); }
+const allowedAttempts = ex => Math.max(0, ex.cfg.attempts ?? (ex.kind === "speak" || ex.kind === "mono" ? 3 : 0));
+const isDue = v => !v.learned && v.next && v.next <= TODAY;
+function vstats(student) {
+  const all = S.vocab.filter(v => v.student === student);
+  return { total: all.length, learned: all.filter(v => v.learned).length, due: all.filter(isDue).length,
+    newN: all.filter(v => v.reviews === 0 && !v.learned).length, learning: all.filter(v => v.reviews > 0 && !v.learned).length,
+    reviewedToday: all.filter(v => v.lastAt === TODAY).length, added7: all.filter(v => v.added >= addDays(TODAY, -6)).length };
+}
+function wordStatus(v) { return v.learned ? "Выучено" : v.reviews === 0 ? "Новое" : "Учу"; }
+function nextInterval(v, g) {
+  const cur = Math.max(v.interval, 0);
+  if (g === "again") return 1;
+  if (g === "hard") return Math.max(cur + 1, Math.round(cur * 1.2));
+  let p = v.reps === 0 ? 1 : v.reps === 1 ? 6 : Math.round(cur * v.ease);
+  if (g === "easy") p = Math.max(p + 1, Math.round(p * 1.3));
+  return Math.min(Math.max(p, 1), 365);
+}
+const intervalLabel = d => d === 0 ? "сегодня" : d === 1 ? "1 день" : `${d} дн.`;
+function streakOf(student) { const p = S.profiles[student]; return { cur: p.streak, best: p.longest, today: p.last === TODAY }; }
+function registerActivity(student) {
+  const p = S.profiles[student];
+  if (p.last === TODAY) return;
+  p.streak = p.last === addDays(TODAY, -1) ? p.streak + 1 : 1;
+  p.longest = Math.max(p.longest, p.streak);
+  p.last = TODAY;
+}
+function describeRule(r) {
+  let t = TRIGGERS[r.trigger];
+  if (r.trigger === "failed") t += ` (< ${r.threshold}%)`; else if (r.trigger === "passed") t += ` (≥ ${r.threshold}%)`;
+  const act = r.action === "repeat" ? `повтор через ${r.days} дн.` : "отметить мне" + (r.note ? `: ${r.note}` : "");
+  return `${t} → ${act}${r.once ? " · один раз" : ""}${r.active ? "" : " · выключено"}`;
+}
+function applyRule(a, r, detail) {
+  let created = null;
+  if (r.action === "repeat") {
+    const target = addDays(TODAY, r.days);
+    const plan = S.plans.find(p => p.enroll === planById(a.plan).enroll && p.monday === mondayOf(target)) || createPlan(S, planById(a.plan).enroll, mondayOf(target), "Повторы");
+    const copy = newAsg(plan.id, dayIdx(target), { ...clone(a), exercises: a.exercises.map(e => ({ ...clone(e), id: uid(), attempts: [] })), rules: [] });
+    copy.repeatOf = a.id;
+    S.asg.push(copy);
+    created = copy.id;
+    detail += ` → повтор через ${r.days} дн.`;
+  } else if (r.note) detail += " → " + r.note;
+  S.fires.push({ id: uid(), asg: a.id, rule: r.id, ruleText: describeRule(r), detail, created, seen: false, at: nowStr() });
+}
+function evaluateAttempt(a, attempt) {
+  const pct = attempt.max === 0 ? 100 : Math.round(100 * attempt.score / attempt.max);
+  for (const r of a.rules.filter(r => r.active)) {
+    const fired = S.fires.some(f => f.rule === r.id);
+    const matched = r.trigger === "failed" ? pct < r.threshold : r.trigger === "passed" ? pct >= r.threshold : false;
+    if (!matched || (r.once && fired)) continue;
+    applyRule(a, r, `«${a.title}», упражнение: ${pct >= 100 ? "справился" : pct + "%"}`);
+  }
+}
+function evaluateDone(a) {
+  for (const r of a.rules.filter(r => r.active && r.trigger === "done")) {
+    if (r.once && S.fires.some(f => f.rule === r.id)) continue;
+    applyRule(a, r, `«${a.title}» закрыто`);
+  }
+}
+
+/* ================= State & storage ================= */
+let S;
+try { S = JSON.parse(localStorage.getItem(KEY) || "null"); } catch { S = null; }
+if (!S) S = seed();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch { } };
+const ui = { view: null, enroll: null, tab: "plan", monday: mondayOf(TODAY), smonday: mondayOf(TODAY), selected: new Set(), showInactive: false,
+  expanded: new Set(), vocabFilter: "all", vocabQuery: "", review: null, sandbox: { text: "", parsed: null }, wodEdit: null, login: "login" };
+const drafts = {};
+const audioStore = {};
+let modals = [];
+const me = () => user(S.session);
+
+/* ================= Toasts & modals ================= */
+function toast(text, kind = "") {
+  const el = document.createElement("div");
+  el.className = "toast " + kind;
+  el.textContent = text;
+  $("#toasts").appendChild(el);
+  setTimeout(() => el.remove(), 3200);
+}
+function openModal(m) { modals.push(m); renderModals(); }
+function closeModal() { modals.pop(); renderModals(); }
+function renderModals() {
+  $("#modals").innerHTML = modals.map((m, i) => `<div class="overlay" style="z-index:${100 + i}"><div class="modal ${m.size || ""}">
+    <div class="mh"><h2>${esc(m.title)}</h2>${m.noClose ? "" : ibtn("x", "modal-close", "Закрыть")}</div>
+    <div class="mb">${m.body()}</div>
+    <div class="mf">${m.foot ? m.foot() : ""}</div></div></div>`).join("");
+  applyDrafts();
+}
+function confirmBox(text, yes) {
+  openModal({ title: "Подтверждение", body: () => `<div style="white-space:pre-wrap">${esc(text)}</div>`,
+    foot: () => btn("Да", "confirm-yes", { cls: "primary" }) + btn("Отмена", "modal-close"), yes });
+}
+function run(fn) { try { fn(); save(); return true; } catch (e) { toast(e.message, "warn"); return false; } }
+
+/* ================= Rendering ================= */
+function render() {
+  const main = $(".main");
+  const top = main ? main.scrollTop : 0;
+  if (!S.session) $("#app").innerHTML = loginView();
+  else {
+    const u = me();
+    if (!ui.view) ui.view = u.role === "tutor" ? "students" : "today";
+    $("#app").innerHTML = shell(u);
+  }
+  const m2 = $(".main");
+  if (m2) m2.scrollTop = top;
+  applyDrafts();
+  renderModals();
+}
+function applyDrafts() {
+  for (const [id, v] of Object.entries(drafts)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    if (el.type === "checkbox" || el.type === "radio") el.checked = v; else if (el.value !== v) el.value = v;
+  }
+  updatePreview();
+}
+function clearDrafts(prefix) { for (const k of Object.keys(drafts)) if (k.startsWith(prefix)) delete drafts[k]; }
+const val = id => { const el = document.getElementById(id); return el ? (el.type === "checkbox" || el.type === "radio" ? el.checked : el.value) : ""; };
+
+function shell(u) {
+  const nav = u.role === "tutor"
+    ? [["students","users","Ученики"],["templates","file","Шаблоны недель"],["sandbox","code","Песочница"],["library","music","Аудиотека"],["wod","star","Слово дня"]]
+    : [["today","home","Сегодня"],["week","calendar","Неделя"],["review","repeat","Повторение слов"],["words","book","Мой словарь"],["profile","user","Профиль"]];
+  const views = { students: tutorStudents, templates: templatesView, sandbox: sandboxView, library: libraryView, wod: wodView,
+    today: todayView, week: weekView, review: reviewView, words: wordsView, profile: profileView };
+  return `<div class="shell"><aside class="side">
+    <div class="logo"><span class="mark">${ic("cap")}</span>TutorSpace</div>
+    <nav class="nav">${nav.map(([k, i, t]) => `<a class="${ui.view === k ? "on" : ""}" data-a="nav" data-v="${k}">${ic(i)}${t}</a>`).join("")}</nav>
+    <div class="side-foot">
+      ${u.role === "tutor" ? `<button class="btn ghost" data-a="change-pass">${ic("lock")}Сменить пароль</button>` : ""}
+      <button class="btn ghost" data-a="logout">${ic("logout")}Выйти</button>
+      <div class="usercard">${avatar(u.name)}<div class="grow"><div class="ellipsis" style="font-weight:600">${esc(u.name)}</div><div class="muted xs">${u.role === "tutor" ? "Преподаватель" : "Ученик"}</div></div></div>
+    </div></aside>
+    <main class="main">${views[ui.view]()}</main></div>`;
+}
+
+/* ---------- Login ---------- */
+function loginView() {
+  const reg = ui.login === "register";
+  return `<div class="login"><div class="box">
+    <div class="row mb8"><span class="badge blue" style="width:40px;height:40px;background:var(--primary);color:#fff;border-radius:10px">${ic("cap", 20)}</span><span style="font-size:24px;font-weight:600">TutorSpace</span></div>
+    <div class="muted mb20">Недельное расписание заданий для преподавателя и ученика.</div>
+    ${reg ? `<div class="card"><h2>Новый преподаватель</h2><div class="muted mt4">Учеников потом добавляет сам преподаватель в разделе «Ученики».</div>
+      <label class="label">Имя (как показывать)</label><input class="input" id="r-name">
+      <label class="label">Логин</label><input class="input" id="r-login">
+      <label class="label">Пароль</label><input class="input" type="password" id="r-pass">
+      <label class="label">Пароль ещё раз</label><input class="input" type="password" id="r-pass2">
+      <div class="row mt16">${btn("Создать и войти", "register", { cls: "primary" })}${btn("Назад", "login-back")}</div></div>`
+    : `<div class="card"><h2>Вход</h2>
+      <label class="label">Логин</label><input class="input" id="l-login" autocomplete="off">
+      <label class="label">Пароль</label><input class="input" type="password" id="l-pass">
+      <button class="btn primary block lg mt20" data-a="login">Войти</button>
+      <button class="link mt12" data-a="login-register">Зарегистрировать преподавателя</button></div>`}
+    <div class="card"><h3>Демо-доступ</h3><div class="muted small mt4">Это интерактивная копия приложения: всё работает, данные хранятся только в этом браузере.</div>
+      <div class="row wrap mt12">${btn("Войти как преподаватель", "quick", { cls: "soft", d: { l: "tutor" }, icon: "users" })}${btn("Войти как ученик", "quick", { cls: "soft", d: { l: "student" }, icon: "user" })}</div>
+      <div class="muted xs mt12">tutor / 1234 · student / 1234</div>
+      <button class="link xs mt8" data-a="reset-demo">Сбросить демо-данные</button></div>
+  </div></div>`;
+}
+
+/* ================= Student ================= */
+function studentWords() { return S.vocab.filter(v => v.student === S.session && !v.learned); }
+function todayView() {
+  const u = me(), m = mondayOf(TODAY);
+  const plans = [...studentPlans(u.id, m), ...studentPlans(u.id, addDays(m, -7))].filter(p => p.published);
+  const all = plans.flatMap(asgOf);
+  const todays = all.filter(a => unlocked(a) && release(a) === TODAY);
+  const st = streakOf(u.id);
+  const hour = new Date().getHours();
+  const greet = hour < 12 ? "Доброе утро" : hour < 18 ? "Добрый день" : "Добрый вечер";
+  const d = parse(TODAY);
+  const week = studentPlans(u.id, m).filter(p => p.published).flatMap(asgOf);
+  let h = `<div class="page">
+    <div class="row between mb20 top"><div><h1>${greet}, ${esc(u.name.split(" ")[0])}</h1>
+      <div class="muted mt4" style="font-size:15px">Сегодня ${DAYS[dayIdx(TODAY)].toLowerCase()}, ${d.getDate()} ${MONTHS[d.getMonth()]}</div></div>
+      <div class="card row" style="margin:0;padding:8px 14px 8px 10px" title="Лучшая серия: ${plural(st.best, "день", "дня", "дней")}${st.today ? ". Сегодня уже засчитано." : ""}">
+        ${badge("bolt", "blue", 34)}<div><div class="muted xs">Серия</div><div style="font-weight:600;font-size:15px">${plural(st.cur, "день", "дня", "дней")}</div></div></div></div>
+    <div class="strip">${[0,1,2,3,4,5,6].map(i => {
+      const date = addDays(m, i), items = week.filter(a => planned(a) === date), isT = date === TODAY;
+      const allDone = items.length > 0 && items.every(a => a.progress.done);
+      const mark = allDone ? "var(--success)" : !isT && items.length && date < TODAY ? "var(--warning)" : "transparent";
+      return `<div class="day ${isT ? "today" : ""}" data-a="nav" data-v="week" title="${items.length ? plural(items.length, "задание", "задания", "заданий") : "Нет заданий"}">
+        <div class="muted xs">${isT ? "Сегодня" : DSHORT[i]}</div>
+        <div class="n">${date > TODAY && items.length ? `<span class="faint">${ic("lock", 15)}</span>` : parse(date).getDate()}</div>
+        <div class="mark" style="background:${mark}"></div></div>`; }).join("")}</div>
+    <div class="grid2">${progressCard(todays)}${wodCard(u.id)}</div>
+    <div class="grid2b">${taskList(todays)}${dueCard(u.id)}</div>`;
+  for (const p of studentPlans(u.id, m).filter(p => p.published)) h += introCard(p);
+  h += `<h2 class="mt8 mb12">Урок на сегодня</h2>`;
+  if (!todays.length) h += `<div class="card muted">На сегодня заданий нет. Можно повторить слова или доделать задания прошлых дней.</div>`;
+  for (const p of plans) {
+    const mine = todays.filter(a => a.plan === p.id);
+    if (!mine.length) continue;
+    h += mine.map(a => asgCard(a)).join("");
+    for (const day of [...new Set(mine.map(a => a.day))]) h += freezeCard(p, day) + reviewCard(p, day);
+  }
+  const left = all.filter(a => unlocked(a) && release(a) < TODAY && !a.progress.done);
+  if (left.length) h += `<h2 class="mt16 mb12">Не доделано</h2>` + left.map(a => asgCard(a)).join("");
+  return h + "</div>";
+}
+function ring(f) {
+  const size = 112, th = 10, r = (size - th) / 2, c = 2 * Math.PI * r;
+  const color = f >= .999 ? "var(--success)" : "var(--success)";
+  return `<svg width="${size}" height="${size}" style="transform:rotate(-90deg)"><circle cx="56" cy="56" r="${r}" fill="none" stroke="var(--primary-soft)" stroke-width="${th}"/>
+    ${f > 0 ? `<circle cx="56" cy="56" r="${r}" fill="none" stroke="${color}" stroke-width="${th}" stroke-linecap="round" stroke-dasharray="${c * f} ${c}"/>` : ""}</svg>`;
+}
+function dot(done) { return `<span class="dot ${done ? "done" : ""}">${done ? ic("check") : ""}</span>`; }
+function progressCard(todays) {
+  const done = todays.filter(a => a.progress.done).length;
+  return `<div class="card"><div class="card-head"><h2>Прогресс за сегодня</h2></div><div class="row" style="gap:24px">
+    <div class="ring">${ring(todays.length ? done / todays.length : 0)}<div class="c"><div><div style="font-size:24px;font-weight:600">${done}/${todays.length}</div><div class="muted xs">заданий</div></div></div></div>
+    <div class="grow">${todays.length ? todays.slice(0, 5).map(a => `<div class="row" style="margin:6px 0">${dot(a.progress.done)}<span class="ellipsis ${a.progress.done ? "muted" : ""}">${esc(a.title)}</span></div>`).join("") : `<div class="muted">Сегодня заданий нет.</div>`}</div></div></div>`;
+}
+function wodFor(student) {
+  const tutors = S.enroll.filter(e => e.student === student && e.active).map(e => e.tutor);
+  return S.wod.filter(w => tutors.includes(w.tutor) && w.date <= TODAY).sort((a, b) => b.date.localeCompare(a.date))[0];
+}
+function wodCard(student) {
+  const w = wodFor(student);
+  if (!w) return `<div class="card"><div class="card-head"><h2>Слово дня</h2></div><div class="muted">Преподаватель ещё не опубликовал слово дня.</div></div>`;
+  return `<div class="card"><div class="card-head"><h2>Слово дня</h2>${w.date !== TODAY ? `<span class="muted xs">${dm(w.date)}</span>` : `<span style="color:var(--primary)">${ic("star")}</span>`}</div>
+    <div style="font-size:26px;font-weight:600">${esc(w.word)}</div><div style="font-size:15px;color:var(--text2)" class="mt4">${esc(w.tr)}</div>
+    ${w.ex ? `<div class="mt12" style="background:var(--surface-muted);border-radius:8px;padding:10px 12px;color:var(--text2)">${esc(w.ex)}</div>` : ""}
+    <div class="mt16">${btn("В мой словарь", "wod-add", { cls: "soft", icon: "plus", d: { id: w.id } })}</div></div>`;
+}
+function asgBadge(a, size = 38) {
+  if (/youtu/.test(a.url)) return badge("video", "red", size);
+  if (a.exercises.length) { const k = KINDS[a.exercises[0].kind]; return badge(k.icon, k.color, size); }
+  return badge("book", "blue", size);
+}
+function taskList(todays) {
+  const done = todays.filter(a => a.progress.done).length;
+  return `<div class="card"><div class="card-head"><h2>Задания на сегодня</h2>${chip(`${done}/${todays.length}`)}</div>
+    ${todays.length ? `<div class="tasks">${todays.map(a => `<div class="t" data-a="goto" data-id="${a.id}">${dot(a.progress.done)}${asgBadge(a)}
+      <div class="grow"><div class="ellipsis" style="font-weight:600">${esc(a.title)}</div><div class="muted small">${a.exercises.length ? plural(a.exercises.length, "упражнение", "упражнения", "упражнений") : a.mission ? "Миссия" : "Материал"}</div></div>
+      <span class="muted small">${a.minutes} мин</span><span class="faint">${ic("chevR", 12)}</span></div>`).join("")}</div>` : `<div class="muted">На сегодня ничего не запланировано.</div>`}</div>`;
+}
+function dueCard(student) {
+  const due = S.vocab.filter(v => v.student === student && isDue(v));
+  const st = vstats(student);
+  return `<div class="card"><div class="card-head"><h2>Слова к повторению</h2>${chip(plural(due.length, "слово", "слова", "слов"))}</div>
+    ${due.length ? due.slice(0, 6).map((v, i) => `<div class="row between" style="padding:8px 0;${i ? "border-top:1px solid var(--border)" : ""}"><span class="ellipsis">${esc(v.word)}</span><span class="muted small ellipsis" style="max-width:150px">${esc(v.tr)}</span></div>`).join("")
+      + (due.length > 6 ? `<div class="muted small mt4">и ещё ${due.length - 6}</div>` : "")
+      + `<button class="btn primary block lg mt12" data-a="nav" data-v="review">${ic("repeat")}Открыть карточки</button>`
+    : `<div class="muted">На сегодня повторять нечего.</div><div class="muted small mt4">В словаре ${st.total}, выучено ${st.learned}.</div>`}</div>`;
+}
+function introCard(p) {
+  if (!p.intro) return "";
+  const takes = p.intros;
+  return `<div class="card"><h2>Самопрезентация недели</h2><div class="muted mt4">Расскажи о себе за 30–60 секунд. Попыток: ${takes.length} из 3.</div>
+    <div class="mt8" style="color:var(--text2)">— Кто ты?<br>— Где ты живёшь?<br>— О чём мечтаешь?<br>— Чем занимаешься?</div>
+    <div class="row wrap mt8">${takes.map(t => btn(`Попытка ${t.no} (${t.sec} с)`, "play-audio", { icon: "play", d: { id: t.audio } })).join("")}</div>
+    ${takes.length < 3 ? recorder("intro:" + p.id, 60) : ""}</div>`;
+}
+function asgCard(a) {
+  const done = a.progress.done, yt = /youtu/.test(a.url);
+  const ex = a.exercises;
+  return `<div class="card" id="card-${a.id}">
+    <div class="row top">${asgBadge(a, 40)}<div class="grow"><h2>${esc(a.title)}</h2>
+      <div class="row muted small mt4" style="gap:6px">${ic("clock", 12)}${a.minutes} мин · ${DAYS[dayIdx(release(a))]}, ${dm(release(a))}</div></div>
+      <div class="row">${a.repeatOf ? chip("Повтор") : ""}${a.deferred ? chip("Перенесено", "amber") : ""}${done ? chip("Выполнено", "green") : chip("Не выполнено", "gray")}</div></div>
+    ${a.desc ? `<div class="mt16" style="color:var(--text2)">${esc(a.desc)}</div>` : ""}
+    ${a.url ? `<div class="material"><div class="grow"><div style="font-weight:600">${yt ? "YouTube" : "Материал"}</div><div class="xs ellipsis" style="color:var(--primary)">${esc(a.url)}</div></div>
+      <a class="btn primary" href="${esc(a.url)}" target="_blank" rel="noopener">${ic(yt ? "play" : "open")}${yt ? "Смотреть видео" : "Открыть"}</a></div>` : ""}
+    ${a.mission ? `<div class="mission"><div class="row" style="color:var(--primary);font-weight:600">${ic("flag", 14)}Твоя миссия</div>
+      <div class="mt8 mb12" style="color:var(--text2)">${esc(a.mission)}</div><textarea class="input" id="mis-${a.id}" style="min-height:56px">${esc(a.progress.mission)}</textarea></div>` : ""}
+    ${ex.length ? `<div class="row mt20"><h3>Упражнения</h3>${chip(ex.length)}</div>${ex.map(e => exBlock(a, e)).join("")}` : ""}
+    <div class="sep mt20"><label class="label">Комментарий преподавателю (необязательно)</label><input class="input" id="cm-${a.id}" value="${esc(a.progress.comment)}"></div>
+    <div class="row wrap mt12">${done ? btn("Снять отметку о выполнении", "undone", { d: { id: a.id } }) : btn("Отметить выполненным", "done", { cls: "primary", icon: "check", d: { id: a.id } })}
+      ${btn("Сохранить ответ", "save-progress", { d: { id: a.id } })}</div></div>`;
+}
+function personalize(text) {
+  const w = studentWords()[0];
+  return text.replace(/<<word>>/g, w?.word ?? "word").replace(/<<translation>>/g, w?.tr ?? "").replace(/<<example>>/g, w?.ex ?? "");
+}
+function exBlock(a, e) {
+  const k = KINDS[e.kind], at = e.attempts, last = at[at.length - 1], allowed = allowedAttempts(e);
+  const can = allowed === 0 || at.length < allowed;
+  const auto = e.kind === "gap";
+  const status = !last ? chip("Не начато", "gray") : auto && last.score < last.max ? chip(`${last.score} из ${last.max}`, "red") : chip(auto ? "Всё верно" : "Отправлено", "green");
+  let body = "";
+  if (e.kind === "gap") {
+    const { template, blanks } = parseGaps(e.prompt);
+    const parts = template.split("____");
+    body = `<div class="gapline">` + parts.map((p, i) => esc(p) + (i < parts.length - 1 ? (() => {
+      const cls = last ? (last.answers.results[i] ? "ok" : "bad") : "";
+      const hint = blanks[i]?.hint;
+      return `<input class="input ${cls}" id="gap-${e.id}-${i}" value="${esc(last?.answers.blanks[i] ?? "")}"${hint ? ` title="Подсказка: ${esc(hint)}"` : ""}>${hint ? `<span class="muted">(${esc(hint)})</span>` : ""}`;
+    })() : "")).join("") + `</div>` + (can ? `<div class="mt12">${btn(last ? "Проверить ещё раз" : "Проверить", "ex-gap", { cls: "primary", d: { asg: a.id, e: e.id } })}</div>` : "");
+  } else if (e.kind === "open") {
+    body = `<div class="mt8" style="font-size:15px">${esc(personalize(e.prompt))}</div>${e.cfg.minWords ? `<div class="muted xs mt4">Не меньше ${plural(e.cfg.minWords, "слова", "слов", "слов")}.</div>` : ""}
+      ${can ? `<textarea class="input mt8" id="oa-${e.id}">${esc(last?.answers.text ?? "")}</textarea><div class="mt8">${btn(last ? "Отправить новую версию" : "Отправить", "ex-open", { cls: "primary", d: { asg: a.id, e: e.id } })}</div>` : ""}`;
+  } else if (e.kind === "theses") {
+    body = `<div class="mt8" style="font-size:15px">${esc(e.prompt)}</div>
+      ${e.cfg.segStart && a.url ? `<div class="mt8"><a class="btn" href="${esc(a.url)}" target="_blank" rel="noopener">${ic("video")}Открыть отрезок ${esc(e.cfg.segStart)}–${esc(e.cfg.segEnd)}</a></div>` : ""}
+      ${last?.answers.theses.length ? `<label class="label">Сверься с ключом ниже и отметь тезисы, которые совпали по смыслу:</label>
+        ${last.answers.theses.map((t, i) => `<label class="check"><input type="checkbox" id="mk-${e.id}-${i}"${last.answers.marks[i] ? " checked" : ""}><span>${esc(t)}</span></label>`).join("")}
+        <div class="mt8">${btn("Сохранить отметки", "ex-marks", { d: { asg: a.id, e: e.id } })}</div>` : ""}
+      ${can ? `<label class="label">Твои тезисы — по одному на строку (${e.cfg.minTheses}–${e.cfg.maxTheses})</label><textarea class="input" id="th-${e.id}" style="min-height:90px"></textarea>
+        <div class="mt8">${btn(last ? "Отправить заново" : "Отправить тезисы", "ex-theses", { cls: "primary", d: { asg: a.id, e: e.id } })}</div>` : ""}`;
+  } else {
+    const clip = S.media.find(m => m.id === e.audio);
+    body = `<div class="mt8" style="font-size:15px">${esc(personalize(e.prompt))}</div>
+      ${e.kind === "speak" && !clip && e.cfg.transcript ? `<div class="mt8" style="font-size:15px;font-weight:600">Произнеси: «${esc(e.cfg.transcript)}»</div>` : ""}
+      ${e.kind === "speak" ? `<div class="row mt8">${btn("Послушать оригинал", "play-ex", { icon: "play", d: { e: e.id } })}${ibtn("stop", "stop-audio", "Стоп")}</div>` : ""}
+      ${can ? recorder(`ex:${a.id}:${e.id}`, 300) : ""}`;
+  }
+  const reveal = last ? revealText(e, last) : "";
+  return `<div class="exblock"><div class="row top">${badge(k.icon, k.color)}<div class="grow"><h3>${k.label}</h3><div class="muted xs">${allowed ? `Попыток: ${at.length} из ${allowed}` : "Попыток без ограничения"}</div></div>${status}</div>
+    ${e.instruction ? `<div class="muted mt4">${esc(e.instruction)}</div>` : ""}${body}
+    ${!can ? `<div class="muted mt8">Попытки закончились.</div>` : ""}
+    ${reveal ? `<div class="reveal">${esc(reveal)}</div>` : ""}
+    ${at.length ? `<label class="label">Мои попытки</label>${[...at].reverse().map(t => `<div class="mb8"><div class="row"><span class="muted xs">№${t.no} · ${t.at}</span>
+      ${auto ? `<b class="xs">${t.score}/${t.max}</b>` : e.kind === "theses" && t.answers.marks.some(Boolean) ? `<b class="xs">совпало ${t.score} из ${t.max}</b>` : ""}
+      ${t.audio ? ibtn("play", "play-audio", "Прослушать мою запись", { id: t.audio }) : ""}</div>
+      ${e.kind === "open" ? `<div class="small">${esc(t.answers.text)}</div>` : ""}
+      ${t.comment ? `<div style="color:var(--primary)">Преподаватель: ${esc(t.comment)}</div>` : ""}</div>`).join("")}` : ""}</div>`;
+}
+function revealText(e, last) {
+  if (e.kind === "gap") return "Ключ: " + parseGaps(e.prompt).blanks.map((b, i) => `${i + 1}) ${b.answers.join(" / ")}`).join("; ");
+  if (e.kind === "theses") return e.cfg.reference.length ? "Тезисы преподавателя:\n" + e.cfg.reference.map(r => "• " + r).join("\n") : "";
+  if (e.kind === "speak") { const t = S.media.find(m => m.id === e.audio)?.transcript || e.cfg.transcript; return t ? "Оригинал: " + t : ""; }
+  if (e.kind === "open") return e.cfg.sample ? "Пример ответа: " + e.cfg.sample : "";
+  return "";
+}
+let rec = null;
+function recorder(key, max) {
+  const on = rec && rec.key === key;
+  return `<div class="rec">${on ? btn("Остановить", "rec-stop", { cls: "primary", icon: "stop" }) + `<span class="muted" id="rec-timer">Идёт запись… 0:00 / ${Math.floor(max / 60)}:${pad(max % 60)}</span>`
+    : btn("Записать", "rec-start", { icon: "mic", d: { key, max } }) + btn("Загрузить файл…", "rec-file", { d: { key } })}</div>`;
+}
+function freezeCard(p, day) {
+  const items = S.asg.filter(a => a.plan === p.id && a.day === day);
+  const used = new Set(S.asg.filter(a => a.plan === p.id && a.deferred).map(a => a.day)).size, total = 1;
+  if (items.some(a => a.deferred || a.progress.done) || day >= 6) return "";
+  return `<div class="card row">${badge("clock", "blue", 38)}<div class="grow" style="margin-left:6px"><h3>Не успеваешь сегодня?</h3>
+    <div class="muted">Заморозка переносит урок на завтра и сохраняет серию. Осталось на неделю: ${Math.max(0, total - used)} из ${total}.</div></div>
+    ${btn("Заморозить урок", "freeze", { icon: "clock", d: { p: p.id, day }, disabled: total - used <= 0 })}</div>`;
+}
+function lessonDays(p) { return [...new Set(S.asg.filter(a => a.plan === p.id).map(a => a.day))].sort((a, b) => a - b); }
+function reviewCard(p, day) {
+  const days = lessonDays(p);
+  if (!days.includes(day) || addDays(p.monday, day) > TODAY) return "";
+  const first = days[0] === day, prev = days[days.indexOf(day) - 1];
+  const r = p.reviews[day];
+  const opts = first ? [["Good", "Хорошо"], ["Bad", "Плохо"]] : [["Better", "Лучше предыдущего"], ["Same", "Такой же"], ["Worse", "Хуже предыдущего"]];
+  return `<div class="card"><h3>${first ? "Как прошёл урок?" : `Как урок по сравнению с предыдущим (${DAYS[prev].toLowerCase()})?`}</h3>
+    <div class="row wrap mt8">${opts.map(([k, t]) => btn(t, "lesson-review", { cls: r?.value === k ? "primary" : "", d: { p: p.id, day, v: k } })).join("")}</div>
+    <label class="label">Если было плохо или хуже — сначала напиши, что именно не понравилось:</label><input class="input" id="rr-${p.id}-${day}" value="${esc(r?.reason ?? "")}">
+    ${r ? `<div class="muted mt8">Твоя оценка: ${esc(opts.find(o => o[0] === r.value)?.[1] ?? "")}${r.reason ? " — " + esc(r.reason) : ""}</div>` : ""}</div>`;
+}
+
+function weekView() {
+  const u = me(), plans = studentPlans(u.id, ui.smonday).filter(p => p.published);
+  let h = `<div class="page"><div class="row between mb20"><h1>Неделя</h1><div class="row">
+    ${ibtn("chevL", "sweek", "Предыдущая неделя", { d: -7 })}<b style="font-size:16px;margin:0 6px">${weekLabel(ui.smonday)}</b>${ibtn("chevR", "sweek", "Следующая неделя", { d: 7 })}${btn("Эта неделя", "sweek", { d: { d: 0 } })}</div></div>`;
+  if (!plans.length) return h + `<div class="card muted">На эту неделю плана нет.</div></div>`;
+  for (const p of plans) {
+    const items = asgOf(p), done = items.filter(a => a.progress.done).length;
+    const tutor = user(enrollById(p.enroll).tutor);
+    h += `<div class="card"><div class="row between"><h2>${esc(p.title || "План недели")}</h2><span style="font-size:22px;font-weight:600;color:var(--primary)">${items.length ? Math.round(100 * done / items.length) + "%" : ""}</span></div>
+      <div class="muted mt4">Преподаватель: ${esc(tutor.name)} · выполнено ${done} из ${items.length} · созвон-разбор ${dm(p.reviewAt || addDays(p.monday, 6))}</div>
+      <div class="progress mt12"><i style="width:${items.length ? 100 * done / items.length : 0}%"></i></div></div>` + introCard(p);
+    for (let day = 0; day < 7; day++) {
+      const date = addDays(p.monday, day), isT = date === TODAY, list = items.filter(a => a.day === day);
+      const dn = list.filter(a => a.progress.done).length;
+      h += `<div class="mt8 mb8"><div class="row mb12"><div class="day ${isT ? "today" : ""}" style="width:46px;height:46px;padding:5px 0;cursor:default;margin-right:6px"><div class="muted" style="font-size:11px">${DSHORT[day]}</div><div style="font-weight:600;font-size:16px">${parse(date).getDate()}</div></div>
+        <div class="grow"><h3>${DAYS[day]}${isT ? " — сегодня" : ""}</h3><div class="muted small">${list.length ? plural(list.length, "задание", "задания", "заданий") : "Выходной"}</div></div>
+        ${list.length ? (dn === list.length ? chip("Всё выполнено", "green") : chip(`${dn} из ${list.length}`, "gray")) : ""}</div>`;
+      const locked = list.filter(a => !unlocked(a));
+      if (locked.length) h += `<div class="card tight row" style="background:var(--surface-muted)"><span class="muted">${ic("lock", 14)}</span><span class="muted">${plural(locked.length, "задание откроется", "задания откроются", "заданий откроются")} ${dm(locked.map(release).sort()[0])}</span></div>`;
+      for (const a of list.filter(unlocked)) {
+        const open = ui.expanded.has(a.id) || (isT && !a.progress.done && !ui.expanded.has("x" + a.id));
+        h += open ? asgCard(a) : `<div class="card tight row" style="cursor:pointer" data-a="expand" data-id="${a.id}">${dot(a.progress.done)}<b class="grow ellipsis ${a.progress.done ? "muted" : ""}">${esc(a.title)}</b><span class="muted small">${a.minutes} мин</span><span class="muted">${ic("chevD", 12)}</span></div>`;
+      }
+      if (list.length) h += reviewCard(p, day);
+      h += `</div>`;
+    }
+  }
+  return h + "</div>";
+}
+
+function reviewView() {
+  const u = me();
+  if (!ui.review) ui.review = { queue: S.vocab.filter(v => v.student === u.id && isDue(v)).map(v => v.id), done: 0, show: false };
+  const r = ui.review, total = r.done + r.queue.length;
+  let h = `<div class="page" style="max-width:784px;margin:0 auto"><h1>Повторение слов</h1><div class="muted mt4 mb12">Повторено: ${r.done} · осталось: ${r.queue.length}</div>
+    <div class="progress mb20"><i style="width:${total ? 100 * r.done / total : 0}%"></i></div>`;
+  const v = S.vocab.find(x => x.id === r.queue[0]);
+  if (!v) { const st = vstats(u.id); return h + `<div class="card"><h2>${r.done ? "Все слова на сегодня повторены!" : "На сегодня повторять нечего."}</h2><div class="muted mt8">В словаре ${st.total}, выучено ${st.learned}. Новые слова добавляй в «Мой словарь».</div></div></div>`; }
+  h += `<div class="card" style="padding:52px 32px 32px;text-align:center"><div style="font-size:36px;font-weight:600">${esc(v.word)}</div>`;
+  if (!r.show) h += `<button class="btn primary lg mt20" style="min-width:220px" data-a="rv-show">Показать перевод</button>`;
+  else h += `<div class="mt8" style="font-size:20px;color:var(--primary)">${esc(v.tr)}</div>${v.ex ? `<div class="muted mt8">${esc(v.ex)}</div>` : ""}
+    <div class="label" style="margin-top:24px">Как вспомнилось?</div><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+    ${GRADES.map(([g, t]) => `<button class="btn ${g === "good" ? "primary" : ""}" style="flex-direction:column;gap:0;padding:10px 8px" data-a="rv-grade" data-g="${g}"><b>${t}</b><span class="xs" style="opacity:.75">${intervalLabel(nextInterval(v, g))}</span></button>`).join("")}</div>`;
+  return h + "</div></div>";
+}
+
+function wordsView() {
+  const u = me(), st = vstats(u.id), q = ui.vocabQuery.toLowerCase();
+  const list = S.vocab.filter(v => v.student === u.id).filter(v => !q || v.word.toLowerCase().includes(q) || v.tr.toLowerCase().includes(q))
+    .filter(v => ({ due: isDue(v), learning: !v.learned, learned: v.learned, all: true })[ui.vocabFilter]).reverse();
+  return `<div class="page" style="max-width:1064px"><h1>Мой словарь</h1>
+    <div class="muted mt8 mb12">Всего ${st.total} · новых ${st.newN} · учу ${st.learning} · выучено ${st.learned} · к повторению сегодня ${st.due} · повторено сегодня ${st.reviewedToday}</div>
+    <div class="card" style="display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:10px;align-items:end">
+      <div><label class="label" style="margin-top:0">Слово</label><input class="input" id="w-word"></div>
+      <div><label class="label" style="margin-top:0">Перевод</label><input class="input" id="w-tr"></div>
+      <div><label class="label" style="margin-top:0">Пример (необязательно)</label><input class="input" id="w-ex"></div>
+      ${btn("Добавить", "word-add", { cls: "primary" })}</div>
+    <label class="label">Поиск</label><div class="row mb12"><input class="input grow" id="w-q" placeholder="Поиск по слову или переводу" value="${esc(ui.vocabQuery)}">
+      <select class="input" style="width:170px" id="w-filter" data-change="vfilter">${[["all","Все слова"],["due","К повторению"],["learning","Учу"],["learned","Выученные"]].map(([k, t]) => `<option value="${k}"${ui.vocabFilter === k ? " selected" : ""}>${t}</option>`).join("")}</select></div>
+    ${list.length ? list.map(v => `<div class="card tight row top"><div class="grow"><b>${esc(v.word)} — ${esc(v.tr)}</b>${v.ex ? `<div class="muted">${esc(v.ex)}</div>` : ""}
+      <div class="muted xs mt4">${wordStatus(v)} · ${v.learned ? "выучено" : v.next <= TODAY ? "повторить сегодня" : "повтор " + dm(v.next)} · повторений ${v.reviews}</div></div>
+      ${btn(v.learned ? "Вернуть в изучение" : "Уже знаю", "word-learned", { d: { id: v.id } })}${btn("Изменить", "word-edit", { d: { id: v.id } })}${ibtn("trash", "word-del", "Удалить", { id: v.id }, true)}</div>`).join("") : `<div class="muted">Слов нет.</div>`}</div>`;
+}
+
+function profileView() {
+  const u = me(), p = S.profiles[u.id], st = streakOf(u.id);
+  const tutors = S.enroll.filter(e => e.student === u.id && e.active).map(e => user(e.tutor).name);
+  const tile = (t, v, h, i) => `<div class="card tile"><div class="row between"><span class="muted">${t}</span>${badge(i, "blue", 30)}</div><div class="v">${v}</div>${h ? `<div class="muted xs mt4">${h}</div>` : ""}</div>`;
+  return `<div class="page" style="max-width:864px"><h1 class="mb20">Профиль</h1>
+    <div class="card row">${avatar(u.name, 60)}<div class="grow" style="margin-left:10px"><h2>${esc(u.name)}</h2><div class="muted">@${esc(u.login)}</div><div class="mt4" style="color:var(--text2)">Преподаватель: ${esc(tutors.join(", ") || "—")}</div></div>
+      ${btn("Сменить пароль", "change-pass", { icon: "lock" })}</div>
+    <div class="tiles">${tile("Серия", plural(st.cur, "день", "дня", "дней"), st.today ? "сегодня засчитано" : "зайди сегодня, чтобы продлить", "bolt")}${tile("Лучшая серия", plural(st.best, "день", "дня", "дней"), "", "star")}</div>
+    <div class="card"><h2>Анкета</h2><div class="mt8">Интересы: ${esc(p.interests.map(k => INTERESTS.find(i => i[0] === k)?.[1] ?? k).join(", ") || "—")}</div>
+      <div>Уровень: ${p.level ? LEVELS[p.level] : "—"}</div><div class="mt12">${btn("Изменить анкету", "onboarding")}</div></div></div>`;
+}
+
+/* ================= Tutor ================= */
+function myEnrolls(all) { return S.enroll.filter(e => e.tutor === S.session && (all || e.active)); }
+function tutorStudents() {
+  const list = myEnrolls(ui.showInactive);
+  if (!list.find(e => e.id === ui.enroll)) ui.enroll = list[0]?.id ?? null;
+  const e = enrollById(ui.enroll);
+  let h = `<div class="page wide"><div class="row between mb16"><h1>Ученики</h1><div class="row">${btn("Прикрепить", "attach", { icon: "link", title: "Прикрепить уже существующий аккаунт ученика" })}${btn("Новый ученик", "new-student", { cls: "primary", icon: "plus" })}</div></div>`;
+  if (!e) return h + `<div class="card muted">Учеников пока нет. Нажмите «Новый ученик», чтобы создать аккаунт.</div></div>`;
+  h += `<div class="row wrap mb12"><select class="input" style="width:300px" data-change="pick-student">${list.map(x => `<option value="${x.id}"${x.id === e.id ? " selected" : ""}>${esc(user(x.student).name)}${x.active ? "" : " (отключён)"}</option>`).join("")}</select>
+    ${btn("Сбросить пароль", "reset-pass", { icon: "lock" })}${btn(e.active ? "Отключить" : "Вернуть", "toggle-active", { cls: "danger" })}
+    <label class="check" style="margin:0 0 0 8px"><input type="checkbox" data-change="show-inactive"${ui.showInactive ? " checked" : ""}><span>Показывать отключённых</span></label></div>
+    <div class="tabs">${[["plan","План недели"],["overview","Обзор"],["answers","Ответы"],["reviews","Оценки уроков"],["vocab","Словарь"],["auto","Автоматика"]].map(([k, t]) => `<a class="${ui.tab === k ? "on" : ""}" data-a="tab" data-v="${k}">${t}</a>`).join("")}</div>`;
+  return h + ({ plan: planEditor, overview: overviewTab, answers: answersTab, reviews: reviewsTab, vocab: vocabTab, auto: autoTab })[ui.tab](e) + "</div>";
+}
+function planEditor(e) {
+  const p = planOf(S, e.id, ui.monday);
+  let h = `<div class="row between wrap mb12"><div class="row">${ibtn("chevL", "tweek", "Предыдущая неделя", { d: -7 })}<b style="font-size:17px;margin:0 6px">${weekLabel(ui.monday)}</b>${ibtn("chevR", "tweek", "Следующая неделя", { d: 7 })}
+    ${btn("Текущая неделя", "tweek", { d: { d: 0 } })}${btn("Все недели…", "all-weeks")}</div>
+    ${p ? `<div class="row">${btn("Копировать", "copy-week", { icon: "copy" })}${btn("В шаблон", "save-template", { icon: "save", title: "Сохранить неделю как шаблон" })}
+      ${p.published ? btn("Опубликовано", "publish", { cls: "soft", icon: "check", d: { v: 0 }, title: "Нажмите, чтобы скрыть неделю от ученика" }) : btn("Опубликовать", "publish", { cls: "primary", d: { v: 1 } })}</div>` : ""}</div>`;
+  if (!p) return h + `<div class="card" style="text-align:center;padding:40px"><div style="display:flex;justify-content:center">${badge("calendar", "blue", 52)}</div>
+    <h2 class="mt16">На эту неделю плана нет</h2><div class="muted mt4">Создайте пустой план, примените сохранённый шаблон или вставьте текст в «Песочнице».</div>
+    <div class="row mt16" style="justify-content:center">${btn("Создать пустой план", "create-plan", { cls: "primary", icon: "plus" })}${btn("Применить шаблон…", "apply-template-week", { icon: "file" })}${btn("Скопировать с прошлой недели", "copy-prev", { icon: "copy" })}</div></div>`;
+  const items = asgOf(p);
+  h += `<div class="row wrap mb12">${btn("Задание", "new-asg", { cls: "primary", icon: "plus", d: { day: 0 } })}<span style="width:1px;height:26px;background:var(--border);margin:0 4px"></span>
+    <span class="muted">Выбрано: ${ui.selected.size}</span><select class="input" style="width:150px" id="move-day">${DAYS.map((d, i) => `<option value="${i}">${d}</option>`).join("")}</select>
+    ${btn("Переместить", "move-sel")}${btn("Удалить выбранные", "del-sel", { cls: "danger" })}${btn("На день раньше", "shift", { icon: "arrowL", d: { d: -1 } })}${btn("На день позже", "shift", { icon: "arrowR", d: { d: 1 } })}</div>
+    <div class="board">${[0,1,2,3,4,5,6].map(day => {
+      const date = addDays(p.monday, day), isT = date === TODAY, r = p.reviews[day];
+      return `<div class="bcol ${isT ? "today" : ""}"><div class="h"><b style="${isT ? "color:var(--primary)" : ""}">${DSHORT[day]}</b><div class="xs" style="color:${isT ? "var(--primary)" : "var(--muted)"}">${dm(date)}${isT ? " · сегодня" : ""}</div></div>
+        ${items.filter(a => a.day === day).map(a => `<div class="bcard" data-a="edit-asg" data-id="${a.id}" title="${a.mission ? "Миссия: " + esc(a.mission) : "Открыть задание"}">
+          <div class="row between">${asgBadge(a, 26)}<input type="checkbox" data-a="sel" data-id="${a.id}"${ui.selected.has(a.id) ? " checked" : ""} title="Выбрать для переноса или удаления"></div>
+          <div class="title">${esc(a.title)}</div><div class="muted" style="font-size:11.5px;margin-top:2px">${a.minutes} мин${a.exercises.length ? ` · ${a.exercises.length} упр.` : ""}${a.rules.length ? " · " + plural(a.rules.length, "правило", "правила", "правил") : ""}</div>
+          <div class="row wrap mt4" style="gap:4px">${a.progress.done ? chip("выполнено", "green", "sm") : ""}${a.deferred ? chip("перенесено на " + dm(release(a)), "amber", "sm") : ""}${a.repeatOf ? chip("повтор", "blue", "sm") : ""}${a.progress.mission ? chip("есть ответ", "violet", "sm") : ""}</div></div>`).join("")}
+        ${r ? `<div class="chip ${["Bad", "Worse"].includes(r.value) ? "red" : "green"}" style="white-space:normal;display:block;margin-bottom:8px;font-weight:500">${esc(reviewLabel(r.value))}${r.reason ? ": " + esc(r.reason) : ""}</div>` : ""}
+        <div class="addslot" data-a="new-asg" data-day="${day}" title="Добавить задание на этот день">${ic("plus", 11)}Добавить</div></div>`; }).join("")}</div>
+    <div style="display:grid;grid-template-columns:1.4fr 1fr;gap:16px" class="mt16">
+      <div class="card"><div class="card-head" style="margin:0"><h2>Настройки недели</h2>${btn("Сохранить", "save-plan", { cls: "primary" })}</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px"><div>
+          <label class="label">Название недели</label><input class="input" id="p-title" value="${esc(p.title)}">
+          <label class="label">Созвон-разбор (по умолчанию — воскресенье ${dm(addDays(p.monday, 6))})</label><input class="input" type="date" id="p-review" value="${p.reviewAt || ""}">
+          <label class="check mt12"><input type="checkbox" id="p-intro"${p.intro ? " checked" : ""}><span>Голосовая самопрезентация в начале недели (30–60 с, 3 попытки)</span></label></div>
+          <div><label class="label">Заметки к неделе (ученик их не видит)</label><textarea class="input" id="p-notes" style="min-height:96px">${esc(p.notes)}</textarea></div></div>
+        ${p.intro ? `<label class="label">Самопрезентация: ${plural(p.intros.length, "запись", "записи", "записей")} из 3</label><div class="row wrap">${p.intros.map(t => btn(`Попытка ${t.no} (${t.sec} с)`, "play-audio", { icon: "play", d: { id: t.audio } })).join("")}</div>` : ""}
+        <div class="mt12">${btn("Удалить план недели", "delete-plan", { cls: "danger", icon: "trash" })}</div></div>
+      <div class="card"><div class="card-head" style="margin-bottom:4px"><h2>Вопросы к созвону</h2>${chip(dm(p.reviewAt || addDays(p.monday, 6)))}</div>
+        <div class="muted small mb8">Видны только вам. Отмечайте заданные вопросы прямо во время созвона.</div>
+        ${p.questions.map(q => `<div class="row between"><label class="check grow"><input type="checkbox" data-a="q-ask" data-id="${q.id}"${q.asked ? " checked" : ""}><span>${esc(q.text)}</span></label>${ibtn("trash", "q-del", "Удалить", { id: q.id }, true)}</div>`).join("")}
+        <div class="row mt12"><input class="input grow" id="q-new">${btn("Добавить", "q-add", { icon: "plus" })}</div></div></div>`;
+  return h;
+}
+const reviewLabel = v => ({ Good: "Хорошо", Bad: "Плохо", Better: "Лучше предыдущего", Same: "Такой же", Worse: "Хуже предыдущего" })[v];
+function overviewTab(e) {
+  const sid = e.student, p = S.profiles[sid], st = streakOf(sid), vs = vstats(sid);
+  const plans = S.plans.filter(x => x.enroll === e.id), items = plans.flatMap(asgOf);
+  const opened = items.filter(unlocked), done = opened.filter(a => a.progress.done).length, overdue = opened.filter(a => !a.progress.done && release(a) < TODAY).length;
+  const attempts = items.flatMap(a => a.exercises.flatMap(x => x.attempts.map(t => ({ x, t }))));
+  const awaiting = attempts.filter(({ x, t }) => x.kind !== "gap" && !t.comment).length, failed = attempts.filter(({ x, t }) => x.kind === "gap" && t.score < t.max).length;
+  const bad = plans.flatMap(pl => Object.values(pl.reviews)).filter(r => ["Bad", "Worse"].includes(r.value)).length;
+  const fires = S.fires.filter(f => items.some(a => a.id === f.asg) || plans.some(pl => S.asg.some(a => a.id === f.asg && a.plan === pl.id)));
+  const visitDays = Object.keys(p.visits).sort();
+  const tile = (t, v, h) => `<div class="card tile"><div class="muted">${t}</div><div class="v">${v}</div><div class="muted xs mt4">${h}</div></div>`;
+  const start = addDays(mondayOf(TODAY), -21);
+  return `<div class="muted mb12">Поведение — за последние 4 недели; словарь — за всё время.</div><div class="tiles">
+    ${tile("Серия дней", st.cur, `лучшая: ${st.best}${st.today ? " · сегодня +1" : ""}`)}
+    ${tile("Заходил в программу", plural(visitDays.length, "день", "дня", "дней"), visitDays.length ? `последний раз ${dmy(visitDays[visitDays.length - 1])}` : "ещё ни разу")}
+    ${tile("Задания", `${done} / ${opened.length}`, `выполнено из открытых · просрочено ${overdue} · всего ${items.length}`)}
+    ${tile("Ответы на упражнения", attempts.length, `ждут комментария ${awaiting} · с ошибками ${failed}`)}
+    ${tile("Словарь", vs.total, `выучено ${vs.learned} · к повторению ${vs.due} · +${vs.added7} за неделю`)}
+    ${tile("Оценки уроков", bad, bad ? `плохо/хуже: ${bad}` : "жалоб нет")}
+    ${tile("Срабатывания правил", fires.filter(f => !f.seen).length, fires.some(f => !f.seen) ? `новых: ${fires.filter(f => !f.seen).length}` : "всё прочитано")}</div>
+    <div class="card"><h2 class="mb12">Посещения</h2><div style="display:grid;grid-template-columns:repeat(7,56px);gap:4px">${DSHORT.map(d => `<div class="muted xs">${d}</div>`).join("")}
+      ${Array.from({ length: 28 }, (_, i) => { const d = addDays(start, i), v = p.visits[d];
+        return `<div style="height:28px;border-radius:6px;display:grid;place-items:center;font-size:12px;${v ? "background:var(--primary);color:#fff" : d > TODAY ? "border:1px solid var(--border)" : "background:var(--surface-muted);border:1px solid var(--border);color:var(--muted)"}${d === TODAY ? ";outline:2px solid var(--primary)" : ""}" title="${dm(d)}${v ? `: заходил ${plural(v, "раз", "раза", "раз")}` : ""}">${parse(d).getDate()}</div>`; }).join("")}</div></div>
+    <div class="card"><h2>Анкета ученика</h2><div class="mt8">${p.onboarded ? `Интересы: ${esc(p.interests.map(k => INTERESTS.find(i => i[0] === k)?.[1]).join(", "))}<br>Уровень: ${LEVELS[p.level]}` : `<span class="muted">Ученик ещё не заполнил анкету (заполнит при первом входе).</span>`}</div></div>`;
+}
+function answersTab(e) {
+  const items = S.plans.filter(x => x.enroll === e.id).flatMap(asgOf);
+  let atts = items.flatMap(a => a.exercises.flatMap(x => x.attempts.map(t => ({ a, x, t })))).reverse();
+  if (ui.onlyUnchecked) atts = atts.filter(({ x, t }) => x.kind !== "gap" && !t.comment);
+  const missions = items.filter(a => a.progress.mission || a.progress.comment || a.progress.done);
+  let h = `<div class="muted">Автоматически проверяются только пропуски. Остальное — прочитайте или прослушайте и оставьте комментарий (без оценки).</div>
+    <div class="row mt8 mb12"><label class="check"><input type="checkbox" data-change="only-unchecked"${ui.onlyUnchecked ? " checked" : ""}><span>Только без комментария</span></label></div>`;
+  if (!ui.onlyUnchecked && missions.length) h += `<div class="card"><h2>Миссии и комментарии к заданиям</h2>${missions.map(a => `<div class="mt8"><b>${dm(planned(a))} · ${esc(a.title)}${a.progress.done ? " — выполнено" : ""}</b>
+    ${a.mission ? `<div class="muted">Миссия: ${esc(a.mission)}</div>` : ""}${a.progress.mission ? `<div>Ответ: ${esc(a.progress.mission)}</div>` : ""}${a.progress.comment ? `<div style="color:var(--primary)">Комментарий ученика: ${esc(a.progress.comment)}</div>` : ""}</div>`).join("")}</div>`;
+  if (!atts.length) h += `<div class="muted mt8">Ответов на упражнения нет.</div>`;
+  for (const { a, x, t } of atts) {
+    const auto = x.kind === "gap";
+    h += `<div class="card"><div class="row wrap"><b>${dm(planned(a))} · ${esc(a.title)} · ${KINDS[x.kind].label} · попытка ${t.no}</b>
+      ${auto ? (t.score >= t.max ? chip(`${t.score}/${t.max} верно`, "green") : chip(`${t.score}/${t.max}`, "red")) : t.comment ? "" : chip("ждёт комментария", "amber")}</div>
+      <div class="muted xs">${t.at}</div><div class="muted mt8">Задание: ${esc(auto ? parseGaps(x.prompt).template : x.prompt)}</div>
+      <div class="mt8" style="white-space:pre-wrap">${esc(describeAnswer(x, t))}</div>
+      ${t.audio || x.audio ? `<div class="row mt8">${t.audio ? btn("Запись ученика", "play-audio", { icon: "play", d: { id: t.audio } }) : ""}${x.audio ? btn("Оригинал", "play-clip", { icon: "play", d: { id: x.audio } }) : ""}${ibtn("stop", "stop-audio", "Стоп")}</div>` : ""}
+      <label class="label">Ваш комментарий</label><textarea class="input" id="tc-${x.id}-${t.no}" style="min-height:44px">${esc(t.comment)}</textarea>
+      <div class="mt8">${btn("Сохранить комментарий", "tutor-comment", { d: { asg: a.id, x: x.id, n: t.no } })}</div></div>`;
+  }
+  return h;
+}
+function describeAnswer(x, t) {
+  const a = t.answers;
+  if (x.kind === "gap") return a.blanks.map((b, i) => `${a.results[i] ? "+" : "−"} ${b}`).join("; ") + `  —  ${t.score}/${t.max}`;
+  if (x.kind === "open") return a.text;
+  if (x.kind === "theses") return a.theses.map((s, i) => (a.marks.length ? (a.marks[i] ? "+ " : "− ") : "• ") + s).join("\n");
+  return `Аудиозапись (${t.sec} с)`;
+}
+function reviewsTab(e) {
+  const rows = S.plans.filter(x => x.enroll === e.id).flatMap(p => Object.entries(p.reviews).map(([d, r]) => ({ p, d: +d, r }))).sort((a, b) => (b.p.monday + b.d).localeCompare(a.p.monday + a.d));
+  if (!rows.length) return `<div class="muted">Ученик ещё не оценивал уроки.</div>`;
+  return `<table class="t"><tr><th>Неделя</th><th>День</th><th>Вопрос</th><th>Оценка</th><th>Что не понравилось</th></tr>${rows.map(({ p, d, r }) =>
+    `<tr><td>${weekLabel(p.monday)}</td><td>${DSHORT[d]} ${dm(addDays(p.monday, d))}</td><td>${["Good", "Bad"].includes(r.value) ? "Первый урок недели" : "Сравнение"}</td><td>${reviewLabel(r.value)}${["Bad", "Worse"].includes(r.value) ? "  (!)" : ""}</td><td>${esc(r.reason)}</td></tr>`).join("")}</table>`;
+}
+function vocabTab(e) {
+  const st = vstats(e.student), list = S.vocab.filter(v => v.student === e.student);
+  return `<div class="muted mb8">Всего ${st.total} · выучено ${st.learned} · к повторению сегодня ${st.due} · повторено сегодня ${st.reviewedToday} · добавлено за 7 дней ${st.added7}</div>
+    <table class="t"><tr><th>Слово</th><th>Перевод</th><th>Пример</th><th>Статус</th><th>Следующее повторение</th><th>SM-2</th></tr>${list.map(v =>
+    `<tr><td>${esc(v.word)}</td><td>${esc(v.tr)}</td><td>${esc(v.ex)}</td><td>${wordStatus(v)}</td><td>${v.learned ? "—" : dmy(v.next)}</td><td class="muted">EF ${v.ease.toFixed(2)} · ${v.interval} дн. · повт. ${v.reps} · провалов ${v.lapses}</td></tr>`).join("")}</table>`;
+}
+function autoTab(e) {
+  const ids = new Set(S.asg.filter(a => planById(a.plan).enroll === e.id).map(a => a.id));
+  const fires = S.fires.filter(f => ids.has(f.asg) || f.enroll === e.id).reverse();
+  return `<div class="muted">Каждое срабатывание автоматических правил — чтобы автоматизация не была «магией».</div><div class="mt8 mb16">${btn("Отметить всё прочитанным", "fires-seen")}</div>
+    ${fires.length ? fires.map(f => { const c = S.asg.find(a => a.id === f.created);
+      return `<div class="card" style="${f.seen ? "" : "background:var(--primary-soft)"}"><div class="row"><span class="muted">${f.at}</span>${f.seen ? "" : chip("новое", "amber")}</div>
+        <b class="mt4" style="display:block">${esc(f.detail)}</b><div class="muted">Правило: ${esc(f.ruleText)}</div>
+        ${c ? `<div style="color:var(--primary)">Создано задание на ${dmy(planned(c))} (${DSHORT[c.day]})</div>` : ""}</div>`; }).join("") : `<div class="muted mt16">Правила ещё ни разу не срабатывали.</div>`}`;
+}
+function templatesView() {
+  const list = S.templates.filter(t => t.tutor === S.session);
+  return `<div class="page wide"><h1>Шаблоны недель</h1><div class="muted mt8 mb16">Удачную неделю можно сохранить как шаблон («План недели» → «В шаблон») и применить к любому ученику с любого понедельника.</div>
+    ${list.length ? list.map(t => { const by = {}; t.payload.assignments.forEach(a => (by[a.day] ??= []).push(a));
+      return `<div class="card"><h2>${esc(t.name)}</h2>${t.desc ? `<div class="muted mt4">${esc(t.desc)}</div>` : ""}
+        <div class="muted xs mt4">${plural(t.payload.assignments.length, "задание", "задания", "заданий")} · применён ${plural(t.used, "раз", "раза", "раз")} · обновлён ${dmy(t.updated)}</div>
+        <div class="mt8 small">${Object.keys(by).sort().map(d => `${DSHORT[d]}: ${by[d].map(a => esc(a.title) + (a.exercises.length ? ` (${a.exercises.length} упр.)` : "")).join("; ")}`).join("<br>")}</div>
+        <div class="row wrap mt12">${btn("Применить к ученику…", "tpl-apply", { cls: "primary", d: { id: t.id } })}${btn("Переименовать…", "tpl-rename", { d: { id: t.id } })}${btn("Удалить", "tpl-del", { cls: "danger", d: { id: t.id } })}</div></div>`; }).join("") : `<div class="muted">Шаблонов пока нет.</div>`}</div>`;
+}
+const EXAMPLE = `# ПН
+## Смотрим отрезок про семью
+ссылка: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+время: 15
+миссия: поймай 3 новых слова
+описание: Смотри без субтитров, потом сверимся.
+повтор: 7
+### пропуски
+He {{went|did go}} to school yesterday.
+### вопрос
+What does he do for a living?
+### тезисы 13:23-14:44
+- he has 10 kids
+- he lives in Texas
+- he loves his job
+
+# СР
+## Произношение
+### произношение
+текст: I'll be back
+
+# ПТ
+## Итоги недели
+### монолог
+Расскажи, что нового ты узнал за неделю.`;
+function parseWeek(text) {
+  const out = { title: "", notes: "", intro: false, questions: [], assignments: [], warnings: [] };
+  const dayMap = { "пн": 0, "понедельник": 0, "вт": 1, "вторник": 1, "ср": 2, "среда": 2, "чт": 3, "четверг": 3, "пт": 4, "пятница": 4, "сб": 5, "суббота": 5, "вс": 6, "воскресенье": 6 };
+  const kindMap = { "пропуски": "gap", "пропуск": "gap", "вопрос": "open", "ответ": "open", "тезисы": "theses", "произношение": "speak", "монолог": "mono", "голосовое": "mono" };
+  let day = 0, a = null, ex = null;
+  const finishEx = () => { if (ex) { ex.prompt = ex.lines.join("\n").trim(); delete ex.lines;
+    if (ex.kind === "speak" && !ex.prompt) ex.prompt = "Послушай и повтори за оригиналом.";
+    if (ex.kind === "theses" && !ex.prompt) ex.prompt = "Выпишите главные мысли.";
+    if (ex.kind === "gap" && !parseGaps(ex.prompt).blanks.length) out.warnings.push(`«${a.title}»: в пропусках нет ни одного {{…}}.`); ex = null; } };
+  text.replace(/\r/g, "").split("\n").forEach((raw, n) => {
+    const line = raw.trim();
+    if (!line) return;
+    let m;
+    if ((m = line.match(/^###\s*(\S+)\s*(.*)$/))) {
+      finishEx();
+      if (!a) { out.warnings.push(`Строка ${n + 1}: упражнение без задания.`); return; }
+      const kind = kindMap[m[1].toLowerCase()];
+      if (!kind) { out.warnings.push(`Строка ${n + 1}: неизвестный тип «${m[1]}», считаю вопросом.`); }
+      ex = { kind: kind || "open", instruction: "", audio: null, cfg: { segStart: "", segEnd: "", reference: [], minTheses: 3, maxTheses: 5, minWords: 0, sample: "", transcript: "", attempts: null }, lines: [] };
+      const seg = m[2].match(/(\d+:\d+)\s*[-–]\s*(\d+:\d+)/);
+      if (seg) { ex.cfg.segStart = seg[1]; ex.cfg.segEnd = seg[2]; }
+      a.exercises.push(ex);
+    } else if ((m = line.match(/^##\s*(.+)$/))) {
+      finishEx();
+      a = { day, title: m[1].trim(), desc: "", url: "", missionKind: "Custom", mission: "", minutes: 10, exercises: [], rules: [] };
+      out.assignments.push(a);
+    } else if ((m = line.match(/^#\s*(.+)$/))) {
+      finishEx(); a = null;
+      const d = dayMap[m[1].trim().toLowerCase()];
+      if (d === undefined) out.warnings.push(`Строка ${n + 1}: не понял день «${m[1]}».`); else day = d;
+    } else if (ex && line.startsWith("-")) ex.cfg.reference.push(line.replace(/^[-•*]\s*/, ""));
+    else if (ex && (m = line.match(/^(текст|подсказка|образец):\s*(.*)$/i))) {
+      const k = m[1].toLowerCase();
+      if (k === "текст") ex.cfg.transcript = m[2]; else if (k === "подсказка") ex.instruction = m[2]; else ex.cfg.sample = m[2];
+    } else if (ex) ex.lines.push(line);
+    else if (a && (m = line.match(/^(ссылка|время|миссия|описание|повтор):\s*(.*)$/i))) {
+      const k = m[1].toLowerCase(), v = m[2].trim();
+      if (k === "ссылка") a.url = v; else if (k === "время") a.minutes = parseInt(v) || 10; else if (k === "миссия") a.mission = v;
+      else if (k === "описание") a.desc = v; else if (parseInt(v) > 0) a.rules.push({ trigger: "done", action: "repeat", threshold: 100, days: parseInt(v), note: "", once: true, active: true });
+    } else out.warnings.push(`Строка ${n + 1}: не понял «${line.slice(0, 40)}».`);
+  });
+  finishEx();
+  return out;
+}
+function sandboxView() {
+  const p = ui.sandbox.parsed;
+  let prev = `<div class="muted">Здесь появится разобранная неделя.</div>`;
+  if (p) {
+    prev = (p.warnings.length ? `<div class="card" style="background:var(--warning-soft)"><b style="color:var(--warning)">Предупреждения</b>${p.warnings.map(w => `<div>• ${esc(w)}</div>`).join("")}</div>` : "")
+      + (!p.assignments.length ? `<div class="muted">Не нашёл ни одного задания.</div>` : `<div class="row wrap mb12">${btn("Установить неделю ученику…", "sb-install", { cls: "primary" })}${btn("Сохранить как шаблон…", "sb-template")}</div>`
+      + [...new Set(p.assignments.map(a => a.day))].sort().map(d => `<div class="card"><h2>${DAYS[d]}</h2>${p.assignments.filter(a => a.day === d).map(a => `<div class="mt8"><b>${esc(a.title)}</b>
+        <div class="muted xs">${[a.minutes + " мин", a.url, a.mission && "миссия: " + a.mission, ...a.rules.map(r => `повтор через ${r.days} дн.`)].filter(Boolean).map(esc).join(" · ")}</div>
+        ${a.desc ? `<div class="small">${esc(a.desc)}</div>` : ""}${a.exercises.map(x => `<div class="small">  • ${KINDS[x.kind].label}: ${esc(x.kind === "gap" ? parseGaps(x.prompt).template : x.prompt)}${x.cfg.segStart ? ` [${x.cfg.segStart}–${x.cfg.segEnd}]` : ""}${x.cfg.reference.length ? ` (ключ: ${x.cfg.reference.length} тез.)` : ""}${x.cfg.transcript ? ` — «${esc(x.cfg.transcript)}»` : ""}</div>`).join("")}</div>`).join("")}</div>`).join(""));
+  }
+  return `<div class="page wide" style="height:100%;display:flex;flex-direction:column"><h1>Песочница</h1>
+    <div class="muted mt8">«#» — день (ПН, ВТ…), «##» — задание, «###» — упражнение (пропуски, вопрос, тезисы 13:23-14:44, произношение, монолог). Поля: ссылка, время, миссия, описание, повтор (дней); в упражнении: текст, подсказка, образец. Разбор ничего не сохраняет — сначала посмотрите результат.</div>
+    <div class="row mt12 mb12">${btn("Разобрать", "sb-parse", { cls: "primary" })}${btn("Вставить пример", "sb-example")}${btn("Очистить", "sb-clear")}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:420px"><textarea class="input" id="sb-text" style="font-family:Consolas,monospace;height:100%;min-height:420px">${esc(ui.sandbox.text)}</textarea><div style="overflow:auto">${prev}</div></div></div>`;
+}
+function libraryView() {
+  const list = S.media.filter(m => m.owner === S.session && m.kind === "clip").reverse();
+  return `<div class="page wide"><h1>Аудиотека</h1><div class="muted mt8 mb16">Отрезки из фильмов, образцы произношения и т. п. Файл загружается один раз и прикрепляется к любым упражнениям. Расшифровка показывается ученику после попытки в упражнении «Повторить за оригиналом».</div>
+    <div class="card"><h2>Добавить</h2><div class="mt8">${btn("Выбрать файл…", "lib-file", { cls: "primary", icon: "upload" })}</div><div class="muted mt12">или записать с микрофона:</div>${recorder("lib", 300)}</div>
+    ${list.length ? list.map(c => `<div class="card row top"><div class="grow"><b>${esc(c.title || "Аудио")}</b><div class="muted xs">${c.sec ? `${Math.floor(c.sec / 60)}:${pad(c.sec % 60)} · ` : ""}${c.created}${c.origin ? " · " + esc(c.origin) : ""}${audioStore[c.id] ? "" : c.transcript ? " · озвучка расшифровки" : ""}</div>
+      ${c.transcript ? `<div class="small mt4">«${esc(c.transcript)}»</div>` : ""}</div>${ibtn("play", "play-clip", "Прослушать", { id: c.id })}${ibtn("stop", "stop-audio", "Стоп")}${btn("Изменить", "lib-edit", { d: { id: c.id } })}${ibtn("trash", "lib-del", "Удалить", { id: c.id }, true)}</div>`).join("") : `<div class="muted">Аудиотека пуста.</div>`}</div>`;
+}
+function wodView() {
+  const list = S.wod.filter(w => w.tutor === S.session).sort((a, b) => b.date.localeCompare(a.date));
+  const ed = ui.wodEdit || { date: TODAY, word: "", tr: "", ex: "" };
+  return `<div class="page" style="max-width:1064px"><h1>Слово дня</h1><div class="muted mt8 mb16">Ученики видят самое свежее слово (на сегодня или раньше) на главном экране. Одно слово на дату — повторное сохранение заменяет его.</div>
+    <div class="card"><label class="label" style="margin-top:0">Дата</label><input class="input" type="date" id="wd-date" style="width:200px" value="${ed.date}">
+      <label class="label">Слово</label><input class="input" id="wd-word" value="${esc(ed.word)}"><label class="label">Перевод</label><input class="input" id="wd-tr" value="${esc(ed.tr)}">
+      <label class="label">Пример</label><input class="input" id="wd-ex" value="${esc(ed.ex)}"><div class="mt12">${btn("Опубликовать", "wod-save", { cls: "primary" })}</div></div>
+    ${list.map(w => `<div class="card row top"><div class="grow"><div class="muted xs">${dmy(w.date)}${w.date === TODAY ? " (сегодня)" : ""}</div><b>${esc(w.word)} — ${esc(w.tr)}</b>${w.ex ? `<div class="muted">${esc(w.ex)}</div>` : ""}</div>
+      ${btn("Изменить", "wod-edit", { d: { id: w.id } })}${ibtn("trash", "wod-del", "Удалить", { id: w.id }, true)}</div>`).join("")}</div>`;
+}
+
+/* ================= Modals (forms) ================= */
+const field = (label, html) => `<label class="label">${esc(label)}</label>${html}`;
+const inp = (id, v = "", type = "text", extra = "") => `<input class="input" id="${id}" type="${type}" value="${esc(v)}"${extra}>`;
+const sel = (id, opts, v, extra = "") => `<select class="input" id="${id}"${extra}>${opts.map(([k, t]) => `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
+function form(title, body, okLabel, onOk, size) {
+  clearDrafts("f-");
+  openModal({ title, size, body, foot: () => btn(okLabel, "form-ok", { cls: "primary" }) + btn("Отмена", "modal-close"), ok: onOk });
+}
+function pickTarget(title, cb, enroll, monday) {
+  const list = myEnrolls();
+  if (!list.length) return toast("Сначала добавьте ученика.", "warn");
+  form(title, () => field("Ученик", sel("f-st", list.map(e => [e.id, user(e.student).name]), enroll || list[0].id)) + field("Неделя (любой день — возьмётся её понедельник)", inp("f-date", monday || addDays(mondayOf(TODAY), 7), "date")), "Далее", () => {
+    if (!val("f-date")) throw new Error("Выберите дату.");
+    const target = { enroll: val("f-st"), monday: mondayOf(val("f-date")) };
+    closeModal();
+    if (planOf(S, target.enroll, target.monday) && S.asg.some(a => a.plan === planOf(S, target.enroll, target.monday).id))
+      confirmBox(`На неделю ${weekLabel(target.monday)} у ученика уже есть задания.\nЗаменить их?`, () => run(() => cb(target, true)) && render());
+    else { run(() => cb(target, false)); render(); }
+    return "keep";
+  });
+}
+function assignmentModal(a) {
+  clearDrafts("f-");
+  const m = { title: a.id ? "Задание: " + a.title : "Новое задание", size: "wide", asg: a,
+    body: () => { const x = m.asg; return `<div style="display:grid;grid-template-columns:200px 1fr;gap:16px"><div>${field("День", sel("f-day", DAYS.map((d, i) => [i, d]), x.day))}</div><div>${field("Заголовок", inp("f-title", x.title))}</div></div>
+      ${field("Ссылка на материал (YouTube определяется автоматически; можно оставить пустой)", inp("f-url", x.url))}
+      ${field("Описание", `<textarea class="input" id="f-desc" style="min-height:80px">${esc(x.desc)}</textarea>`)}
+      <div style="display:grid;grid-template-columns:240px 1fr 110px;gap:16px"><div>${field("Микро-миссия", sel("f-mkind", Object.entries(MISSIONS).map(([k, v]) => [k, v[0]]), x.missionKind, ' data-change="mkind"'))}</div>
+        <div>${field("Формулировка миссии", inp("f-mission", x.id ? x.mission : x.mission || MISSIONS[x.missionKind][1]))}</div><div>${field("Минут", inp("f-min", x.minutes))}</div></div>
+      <div class="muted xs mt4">Если есть миссия и нет упражнений, ученик не сможет закрыть задание без ответа на миссию.</div>
+      <div class="mt12">${btn("Сохранить задание", "asg-save", { cls: "primary" })}</div>
+      <h2 class="mt20">Упражнения</h2>${!x.id ? `<div class="muted mt4">Сохраните задание, чтобы добавлять упражнения и правила.</div>` : x.exercises.map(e => `<div class="card tight row top" style="background:var(--bg);margin-top:8px">${badge(KINDS[e.kind].icon, KINDS[e.kind].color, 34)}
+        <div class="grow" style="margin-left:4px"><b>${KINDS[e.kind].label}</b><div class="muted">${esc((e.kind === "gap" ? parseGaps(e.prompt).template : e.prompt).slice(0, 160))}</div>${e.audio ? `<div class="muted xs">Аудио: ${esc(S.media.find(c => c.id === e.audio)?.title ?? "")}</div>` : ""}</div>
+        ${btn("Изменить", "ex-edit", { d: { id: e.id } })}${ibtn("trash", "ex-del", "Удалить", { id: e.id }, true)}</div>`).join("") + `<div class="mt8">${btn("Добавить упражнение", "ex-new", { cls: "soft", icon: "plus" })}</div>`}
+      <h2 class="mt20">Автоматические правила</h2><div class="muted mt4">Например: «ошибся в упражнении — повторить через 7 дней». Срабатывают только в ответ на действия ученика.</div>
+      ${x.id ? x.rules.map(r => `<div class="card tight row" style="background:var(--bg);margin-top:8px"><div class="grow">${esc(describeRule(r))}</div>${btn("Изменить", "rule-edit", { d: { id: r.id } })}${ibtn("trash", "rule-del", "Удалить", { id: r.id }, true)}</div>`).join("") + `<div class="mt8">${btn("Добавить правило", "rule-new", { cls: "soft", icon: "plus" })}</div>` : ""}`; },
+    foot: () => btn("Закрыть", "asg-close") };
+  openModal(m);
+}
+function exerciseModal(a, e) {
+  clearDrafts("f-");
+  const x = e ? clone(e) : newEx("gap", "");
+  const m = { title: e ? "Упражнение" : "Новое упражнение", size: "mid", ex: x, a, orig: e,
+    body: () => { const k = m.ex.kind, c = m.ex.cfg, lib = S.media.filter(c => c.owner === S.session && c.kind === "clip");
+      const help = { gap: "Пропуски — в двойных фигурных скобках: He {{went|did go::go}} to school. Через | — допустимые варианты, после :: — подсказка. Проверяется автоматически.",
+        open: "Вопрос, на который ученик отвечает текстом. Можно подставить слова из его словаря: <<word>>, <<translation>>, <<example>>.",
+        theses: "Что нужно сделать. Ученик пишет тезисы, затем видит ваш ключ и сам отмечает совпадения.",
+        speak: "Прикрепите аудио из аудиотеки — ученик слушает и записывает свою попытку (обычно до 3 раз).", mono: "Тема монолога. Ученик записывает голосовое сообщение." }[k];
+      return field("Тип упражнения", sel("f-kind", Object.entries(KINDS).map(([k, v]) => [k, v.label]), k, ' data-change="ex-kind"'))
+        + field("Короткая инструкция (необязательно)", inp("f-instr", m.ex.instruction))
+        + field("Текст упражнения", `<textarea class="input" id="f-prompt" style="min-height:90px">${esc(m.ex.prompt)}</textarea>`) + `<div class="muted xs mt4">${esc(help)}</div>`
+        + (k === "gap" ? `<label class="label">Как увидит ученик:</label><div id="gap-preview" style="background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px;white-space:pre-wrap"></div>` : "")
+        + (k === "open" ? field("Минимум слов в ответе (0 — без ограничения)", inp("f-minw", c.minWords)) + field("Пример ответа (ученик увидит после своей попытки)", `<textarea class="input" id="f-sample">${esc(c.sample)}</textarea>`) : "")
+        + (k === "theses" ? `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px"><div>${field("Отрезок: начало (мм:сс)", inp("f-s1", c.segStart))}</div><div>${field("конец (мм:сс)", inp("f-s2", c.segEnd))}</div><div>${field("Мин. тезисов", inp("f-tmin", c.minTheses))}</div><div>${field("Макс. тезисов", inp("f-tmax", c.maxTheses))}</div></div>`
+          + field("Ваши тезисы — ключ (по одному на строку; ученик увидит после ответа)", `<textarea class="input" id="f-ref" style="min-height:90px">${esc(c.reference.join("\n"))}</textarea>`) : "")
+        + (k === "speak" ? field("Текст оригинала (если у аудио нет расшифровки)", `<textarea class="input" id="f-trans">${esc(c.transcript)}</textarea>`) : "")
+        + field("Аудио из аудиотеки", sel("f-audio", [["", "(без аудио)"], ...lib.map(c => [c.id, c.title || "Аудио"])], m.ex.audio || ""))
+        + field("Сколько попыток (0 — без ограничения; для голосовых по умолчанию 3)", inp("f-att", c.attempts ?? "")); },
+    foot: () => btn("Сохранить", "ex-save", { cls: "primary" }) + btn("Отмена", "modal-close") };
+  openModal(m);
+}
+function updatePreview() {
+  const el = document.getElementById("gap-preview"), p = document.getElementById("f-prompt");
+  if (!el || !p) return;
+  const { template, blanks } = parseGaps(p.value);
+  el.textContent = blanks.length ? template + "\n\n" + blanks.map((b, i) => `${i + 1}) ${b.answers.join(" / ")}${b.hint ? `  (подсказка: ${b.hint})` : ""}`).join("\n") : "Пока нет ни одного {{пропуска}}.";
+}
+function ruleModal(a, r) {
+  const x = r || { id: null, trigger: "failed", action: "repeat", threshold: 100, days: 7, note: "", once: true, active: true };
+  form(r ? "Правило" : "Новое правило", () => field("Когда", sel("f-trig", Object.entries(TRIGGERS), x.trigger)) + field("Порог, % (для упражнений: «ошибся» — результат ниже порога, «справился» — не ниже)", inp("f-thr", x.threshold))
+    + field("Что сделать", sel("f-act", Object.entries(ACTIONS), x.action)) + field("Через сколько дней повторить", inp("f-days", x.days)) + field("Заметка для себя (для «Отметить мне»)", inp("f-note", x.note))
+    + `<label class="check mt12"><input type="checkbox" id="f-once"${x.once ? " checked" : ""}><span>Сработать только один раз</span></label><label class="check"><input type="checkbox" id="f-active"${x.active ? " checked" : ""}><span>Правило включено</span></label>`,
+  "Сохранить", () => {
+    const thr = +val("f-thr"), days = +val("f-days");
+    if (!(thr >= 0 && thr <= 100)) throw new Error("«Порог» — нужно число от 0 до 100.");
+    if (!(days >= 1 && days <= 365)) throw new Error("«Дней» — нужно число от 1 до 365.");
+    const data = { trigger: val("f-trig"), action: val("f-act"), threshold: thr, days, note: val("f-note").trim(), once: val("f-once"), active: val("f-active") };
+    if (r) Object.assign(r, data); else a.rules.push({ id: uid(), ...data });
+  });
+}
+function onboardingModal(first) {
+  const p = S.profiles[S.session];
+  clearDrafts("f-");
+  openModal({ title: "Давай познакомимся", noClose: first, first,
+    body: () => `<div class="muted">Две короткие вещи — чтобы преподаватель подбирал материалы под тебя.</div><label class="label">Что тебе интересно?</label>
+      <div class="row wrap" style="gap:4px 16px">${INTERESTS.map(([k, t]) => `<label class="check"><input type="checkbox" id="f-int-${k}"${p.interests.includes(k) ? " checked" : ""}><span>${t}</span></label>`).join("")}</div>
+      <label class="label">Твой уровень языка</label>${Object.entries(LEVELS).map(([k, t]) => `<label class="check"><input type="radio" name="lvl" id="f-lvl-${k}"${p.level === k ? " checked" : ""}><span>${t}</span></label>`).join("")}`,
+    foot: () => btn("Готово", "onb-ok", { cls: "primary" }) + (first ? btn("Выйти", "logout") : btn("Отмена", "modal-close")) });
+}
+
+/* ================= Audio ================= */
+let player = null;
+function stopAudio() { if (player) { player.pause(); player = null; } speechSynthesis.cancel(); }
+function speak(text) { stopAudio(); const u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; speechSynthesis.speak(u); }
+function playUrl(url) { stopAudio(); player = new Audio(url); player.play().catch(() => toast("Не удалось воспроизвести.", "warn")); }
+function playMedia(id) {
+  const m = S.media.find(x => x.id === id);
+  if (audioStore[id]) return playUrl(audioStore[id]);
+  if (m?.transcript) return speak(m.transcript);
+  toast("Запись доступна только в той вкладке, где её сделали (демо хранит аудио в памяти).", "warn");
+}
+function addMedia(owner, kind, sec, url, title) {
+  const m = { id: uid(), owner, kind, title: title || "", transcript: "", origin: "", sec, created: dmy(TODAY) };
+  S.media.push(m);
+  if (url) audioStore[m.id] = url;
+  return m;
+}
+async function startRecording(key, max) {
+  if (rec) return;
+  rec = { key, max, start: Date.now(), chunks: [], mr: null, timer: null };
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    rec.mr = new MediaRecorder(stream);
+    rec.mr.ondataavailable = e => rec?.chunks.push(e.data);
+    rec.mr.start();
+  } catch { toast("Микрофон недоступен — демо запишет «тишину» нужной длины.", "warn"); }
+  stopAudio();
+  rec.timer = setInterval(() => {
+    const s = Math.floor((Date.now() - rec.start) / 1000), el = $("#rec-timer");
+    if (el) el.textContent = `Идёт запись… ${Math.floor(s / 60)}:${pad(s % 60)} / ${Math.floor(max / 60)}:${pad(max % 60)}`;
+    if (s >= max) stopRecording();
+  }, 250);
+  render();
+}
+function stopRecording() {
+  if (!rec) return;
+  const r = rec; rec = null;
+  clearInterval(r.timer);
+  const sec = Math.max(1, Math.round((Date.now() - r.start) / 1000));
+  const finish = url => { recorded(r.key, sec, url); save(); render(); };
+  if (r.mr && r.mr.state !== "inactive") {
+    r.mr.onstop = () => { r.mr.stream.getTracks().forEach(t => t.stop()); finish(URL.createObjectURL(new Blob(r.chunks, { type: r.mr.mimeType }))); };
+    r.mr.stop();
+  } else finish(null);
+}
+function recorded(key, sec, url) {
+  const [kind, a1, a2] = key.split(":");
+  try {
+    if (kind === "lib") { const m = addMedia(S.session, "clip", sec, url, `Запись ${nowStr()}`); save(); editClip(m); return; }
+    if (kind === "intro") {
+      const p = planById(a1);
+      if (p.intros.length >= 3) throw new Error("Попытки закончились — их 3 на неделю.");
+      if (sec < 30) throw new Error("Слишком коротко — нужно хотя бы 30 секунд.");
+      if (sec > 60) throw new Error("Слишком длинно — уложитесь в 60 секунд.");
+      const m = addMedia(S.session, "rec", sec, url, "Самопрезентация");
+      p.intros.push({ no: p.intros.length + 1, sec, audio: m.id });
+      return;
+    }
+    const a = S.asg.find(x => x.id === a1), e = a.exercises.find(x => x.id === a2);
+    const m = addMedia(S.session, "rec", sec, url, KINDS[e.kind].label);
+    submitAttempt(a, e, { blanks: [], results: [], text: "", theses: [], marks: [] }, 0, 0, m.id, sec);
+  } catch (err) { toast(err.message, "warn"); }
+}
+function submitAttempt(a, e, answers, score, max, audio, sec) {
+  const allowed = allowedAttempts(e);
+  if (allowed && e.attempts.length >= allowed) throw new Error("Попытки закончились.");
+  const t = { no: e.attempts.length + 1, at: nowStr(), answers, score, max, audio: audio || null, sec: sec || 0, comment: "" };
+  e.attempts.push(t);
+  evaluateAttempt(a, t);
+  return t;
+}
+function editClip(c) {
+  form("Аудио", () => field("Название", inp("f-t", c.title)) + field("Расшифровка (что звучит)", `<textarea class="input" id="f-tr">${esc(c.transcript)}</textarea>`) + field("Источник (фильм, сцена…)", inp("f-o", c.origin)),
+    "Сохранить", () => { c.title = val("f-t").trim(); c.transcript = val("f-tr").trim(); c.origin = val("f-o").trim(); });
+}
+
+/* ================= Actions ================= */
+function doLogin(login, pass) {
+  const u = S.users.find(x => x.login.toLowerCase() === login.trim().toLowerCase());
+  if (!u || u.pass !== pass) throw new Error("Неверный логин или пароль.");
+  S.session = u.id;
+  ui.view = null; ui.review = null; ui.tab = "plan"; ui.selected.clear();
+  if (u.role === "student") { const v = S.profiles[u.id].visits; v[TODAY] = (v[TODAY] || 0) + 1; }
+  save(); render();
+  if (u.role === "student" && !S.profiles[u.id].onboarded) onboardingModal(true);
+}
+const A = {
+  "nav": d => { ui.view = d.v; if (d.v === "review") ui.review = null; stopAudio(); render(); $(".main").scrollTop = 0; },
+  "login": () => run(() => doLogin(val("l-login"), val("l-pass"))),
+  "quick": d => run(() => doLogin(d.l, "1234")),
+  "login-register": () => { ui.login = "register"; render(); },
+  "login-back": () => { ui.login = "login"; render(); },
+  "register": () => run(() => {
+    const [name, login, p1, p2] = ["r-name", "r-login", "r-pass", "r-pass2"].map(val);
+    if (p1 !== p2) throw new Error("Пароли не совпадают.");
+    if (!login.trim() || p1.length < 4) throw new Error("Нужны логин и пароль (не короче 4 символов).");
+    if (S.users.some(u => u.login.toLowerCase() === login.trim().toLowerCase())) throw new Error("Такой логин уже занят.");
+    S.users.push({ id: uid(), role: "tutor", login: login.trim(), pass: p1, name: name.trim() || login.trim() });
+    ui.login = "login";
+    doLogin(login, p1);
+  }),
+  "reset-demo": () => confirmBox("Сбросить все демо-данные к начальному состоянию?", () => { try { localStorage.removeItem(KEY); } catch { } S = seed(); save(); render(); toast("Демо-данные сброшены.", "ok"); }),
+  "logout": () => { stopAudio(); modals = []; S.session = null; ui.login = "login"; save(); render(); },
+  "modal-close": () => closeModal(),
+  "confirm-yes": () => { const m = modals[modals.length - 1]; closeModal(); m.yes(); },
+  "form-ok": () => { const m = modals[modals.length - 1]; let res; if (run(() => { res = m.ok(); })) { if (res !== "keep") closeModal(); render(); } },
+  "change-pass": () => form("Смена пароля", () => field("Текущий пароль", inp("f-old", "", "password")) + field("Новый пароль", inp("f-new", "", "password")) + field("Новый пароль ещё раз", inp("f-new2", "", "password")), "Сохранить", () => {
+    const u = me();
+    if (u.pass !== val("f-old")) throw new Error("Старый пароль неверен.");
+    if (val("f-new") !== val("f-new2")) throw new Error("Пароли не совпадают.");
+    if (val("f-new").length < 4) throw new Error("Пароль — не короче 4 символов.");
+    u.pass = val("f-new"); toast("Пароль изменён.", "ok");
+  }),
+  /* student */
+  "wod-add": d => run(() => { const w = S.wod.find(x => x.id === d.id); addWord(S, S.session, w.word, w.tr, w.ex); toast("Слово добавлено в словарь.", "ok"); render(); }),
+  "goto": d => { const el = document.getElementById("card-" + d.id); el?.scrollIntoView({ behavior: "smooth", block: "start" }); },
+  "ex-gap": d => run(() => {
+    const a = S.asg.find(x => x.id === d.asg), e = a.exercises.find(x => x.id === d.e), { blanks } = parseGaps(e.prompt);
+    const answers = blanks.map((_, i) => val(`gap-${e.id}-${i}`));
+    const results = blanks.map((b, i) => b.answers.some(x => norm(x) === norm(answers[i])));
+    submitAttempt(a, e, { blanks: answers, results, text: "", theses: [], marks: [] }, results.filter(Boolean).length, blanks.length);
+    clearDrafts(`gap-${e.id}`); render();
+  }),
+  "ex-open": d => run(() => {
+    const a = S.asg.find(x => x.id === d.asg), e = a.exercises.find(x => x.id === d.e), text = val(`oa-${e.id}`).trim();
+    if (!text) throw new Error("Напишите ответ.");
+    if (e.cfg.minWords && words(text) < e.cfg.minWords) throw new Error(`Нужно не меньше ${plural(e.cfg.minWords, "слова", "слов", "слов")}.`);
+    submitAttempt(a, e, { blanks: [], results: [], text, theses: [], marks: [] }, 0, 0);
+    clearDrafts(`oa-${e.id}`); render();
+  }),
+  "ex-theses": d => run(() => {
+    const a = S.asg.find(x => x.id === d.asg), e = a.exercises.find(x => x.id === d.e);
+    const theses = val(`th-${e.id}`).split("\n").map(s => s.trim().replace(/^[-•*]\s*/, "")).filter(Boolean);
+    if (theses.length < e.cfg.minTheses) throw new Error(`Нужно не меньше ${e.cfg.minTheses} тезисов.`);
+    if (e.cfg.maxTheses && theses.length > e.cfg.maxTheses) throw new Error(`Не больше ${e.cfg.maxTheses} тезисов.`);
+    submitAttempt(a, e, { blanks: [], results: [], text: "", theses, marks: [] }, 0, e.cfg.reference.length || theses.length);
+    clearDrafts(`th-${e.id}`); render();
+  }),
+  "ex-marks": d => run(() => {
+    const a = S.asg.find(x => x.id === d.asg), e = a.exercises.find(x => x.id === d.e), t = e.attempts[e.attempts.length - 1];
+    t.answers.marks = t.answers.theses.map((_, i) => val(`mk-${e.id}-${i}`));
+    t.score = t.answers.marks.filter(Boolean).length;
+    clearDrafts(`mk-${e.id}`); render();
+  }),
+  "play-ex": d => { const e = S.asg.flatMap(a => a.exercises).find(x => x.id === d.e); if (e.audio) playMedia(e.audio); else if (e.cfg.transcript) speak(e.cfg.transcript); else toast("У упражнения нет аудио.", "warn"); },
+  "play-audio": d => playMedia(d.id), "play-clip": d => playMedia(d.id), "stop-audio": () => stopAudio(),
+  "rec-start": d => startRecording(d.key, +d.max), "rec-stop": () => stopRecording(),
+  "rec-file": d => { pendingFile = { key: d.key }; $("#filepick").multiple = false; $("#filepick").click(); },
+  "lib-file": () => { pendingFile = { key: "libfile" }; $("#filepick").multiple = true; $("#filepick").click(); },
+  "save-progress": d => run(() => { saveProgress(d.id, null); toast("Сохранено.", "ok"); render(); }),
+  "done": d => run(() => { saveProgress(d.id, true); render(); }),
+  "undone": d => run(() => { saveProgress(d.id, false); render(); }),
+  "freeze": d => confirmBox("Перенести сегодняшний урок на завтра?", () => run(() => {
+    const items = S.asg.filter(a => a.plan === d.p && a.day === +d.day);
+    items.forEach(a => a.deferred = 1);
+    const p = S.profiles[S.session]; if (p.last === addDays(TODAY, -1)) p.last = TODAY;
+    toast("Урок перенесён на завтра, серия сохранена.", "ok"); render();
+  })),
+  "lesson-review": d => run(() => {
+    const reason = val(`rr-${d.p}-${d.day}`).trim();
+    if (["Bad", "Worse"].includes(d.v) && !reason) throw new Error("Если было плохо — напишите, что именно не пошло.");
+    planById(d.p).reviews[d.day] = { value: d.v, reason };
+    render();
+  }),
+  "sweek": d => { ui.smonday = +d.d === 0 ? mondayOf(TODAY) : addDays(ui.smonday, +d.d); render(); },
+  "expand": d => { ui.expanded.add(d.id); render(); },
+  "rv-show": () => { ui.review.show = true; render(); },
+  "rv-grade": d => {
+    const r = ui.review, v = S.vocab.find(x => x.id === r.queue[0]), g = d.g, days = nextInterval(v, g);
+    v.reviews++; v.lastAt = TODAY;
+    if (g === "again") { v.lapses++; v.reps = 0; v.ease = Math.max(1.3, v.ease - .2); }
+    else { v.reps++; v.ease = Math.min(3, Math.max(1.3, v.ease + (g === "hard" ? -.15 : g === "easy" ? .15 : 0))); }
+    v.interval = days; v.next = addDays(TODAY, days);
+    if (days >= 180) v.learned = true;
+    r.queue.shift(); r.done++; r.show = false;
+    if (g === "again") r.queue.push(v.id);
+    save(); render();
+  },
+  "word-add": () => run(() => { addWord(S, S.session, val("w-word"), val("w-tr"), val("w-ex")); clearDrafts("w-word"); clearDrafts("w-tr"); clearDrafts("w-ex"); render(); }),
+  "word-learned": d => run(() => { const v = S.vocab.find(x => x.id === d.id); v.learned = !v.learned; if (!v.learned) v.next = TODAY; render(); }),
+  "word-edit": d => { const v = S.vocab.find(x => x.id === d.id);
+    form("Слово", () => field("Слово", inp("f-w", v.word)) + field("Перевод", inp("f-t", v.tr)) + field("Пример", inp("f-e", v.ex)), "Сохранить", () => {
+      if (!val("f-w").trim() || !val("f-t").trim()) throw new Error("Нужны слово и перевод.");
+      v.word = val("f-w").trim(); v.tr = val("f-t").trim(); v.ex = val("f-e").trim(); }); },
+  "word-del": d => { const v = S.vocab.find(x => x.id === d.id); confirmBox(`Удалить «${v.word}» из словаря?`, () => { S.vocab = S.vocab.filter(x => x !== v); save(); render(); }); },
+  "onboarding": () => onboardingModal(false),
+  "onb-ok": () => run(() => {
+    const ints = INTERESTS.map(i => i[0]).filter(k => val(`f-int-${k}`));
+    if (!ints.length) throw new Error("Выбери хотя бы один интерес.");
+    const lvl = Object.keys(LEVELS).find(k => val(`f-lvl-${k}`));
+    if (!lvl) throw new Error("Выбери уровень языка.");
+    Object.assign(S.profiles[S.session], { interests: ints, level: lvl, onboarded: true });
+    closeModal(); render();
+  }),
+  /* tutor: students */
+  "tab": d => { ui.tab = d.v; render(); },
+  "new-student": () => form("Новый ученик", () => `<div class="muted">Ученик будет входить в программу под своим логином.</div>` + field("Имя ученика", inp("f-name")) + field("Логин", inp("f-login")) + field("Пароль", inp("f-pass", "", "password")), "Создать", () => {
+    const login = val("f-login").trim();
+    if (!val("f-name").trim() || !login) throw new Error("Нужны имя и логин.");
+    if (val("f-pass").length < 4) throw new Error("Пароль — не короче 4 символов.");
+    if (S.users.some(u => u.login.toLowerCase() === login.toLowerCase())) throw new Error("Такой логин уже занят.");
+    const u = { id: uid(), role: "student", login, pass: val("f-pass"), name: val("f-name").trim() };
+    S.users.push(u);
+    S.profiles[u.id] = { interests: [], level: null, onboarded: false, streak: 0, longest: 0, last: null, visits: {} };
+    const e = { id: uid(), tutor: S.session, student: u.id, active: true };
+    S.enroll.push(e); ui.enroll = e.id;
+  }),
+  "attach": () => form("Прикрепить ученика", () => `<div class="muted">Если у ученика уже есть аккаунт (например, от другого преподавателя), введите его логин.</div>` + field("Логин ученика", inp("f-login")), "Прикрепить", () => {
+    const u = S.users.find(x => x.role === "student" && x.login.toLowerCase() === val("f-login").trim().toLowerCase());
+    if (!u) throw new Error("Ученика с таким логином нет.");
+    const e = S.enroll.find(x => x.tutor === S.session && x.student === u.id);
+    if (e?.active) throw new Error("Этот ученик уже у вас.");
+    if (e) e.active = true; else S.enroll.push({ id: uid(), tutor: S.session, student: u.id, active: true });
+  }),
+  "reset-pass": () => { const u = user(enrollById(ui.enroll).student);
+    form(`Новый пароль для ${u.name}`, () => field("Новый пароль", inp("f-pass", "", "password")), "Сохранить", () => { if (val("f-pass").length < 4) throw new Error("Пароль — не короче 4 символов."); u.pass = val("f-pass"); toast("Пароль изменён.", "ok"); }); },
+  "toggle-active": () => { const e = enrollById(ui.enroll), name = user(e.student).name;
+    const go = () => { e.active = !e.active; save(); render(); };
+    e.active ? confirmBox(`Отключить ученика ${name}? Данные сохранятся, его можно будет вернуть.`, go) : go(); },
+  /* tutor: plan */
+  "tweek": d => { ui.monday = +d.d === 0 ? mondayOf(TODAY) : addDays(ui.monday, +d.d); ui.selected.clear(); render(); },
+  "all-weeks": () => { const plans = S.plans.filter(p => p.enroll === ui.enroll).sort((a, b) => b.monday.localeCompare(a.monday));
+    if (!plans.length) return toast("У ученика ещё нет ни одного плана.", "warn");
+    form("Перейти к неделе", () => field("Неделя", sel("f-week", plans.map(p => [p.monday, `${weekLabel(p.monday)}  ${p.title}  (${plural(asgOf(p).length, "задание", "задания", "заданий")})`]), ui.monday)), "Открыть", () => { ui.monday = val("f-week"); }); },
+  "create-plan": () => run(() => { createPlan(S, ui.enroll, ui.monday); render(); }),
+  "copy-prev": () => run(() => { const prev = planOf(S, ui.enroll, addDays(ui.monday, -7)); if (!prev) throw new Error("На прошлой неделе плана нет.");
+    materialize(S, ui.enroll, ui.monday, stripPayload(S, prev), true); render(); }),
+  "apply-template-week": () => { const list = S.templates.filter(t => t.tutor === S.session);
+    if (!list.length) return toast("Шаблонов пока нет. Сохраните удачную неделю как шаблон.", "warn");
+    form("Применить шаблон", () => field("Шаблон", sel("f-tpl", list.map(t => [t.id, `${t.name} (${plural(t.payload.assignments.length, "задание", "задания", "заданий")})`]))), "Применить", () => {
+      const t = S.templates.find(x => x.id === val("f-tpl")); materialize(S, ui.enroll, ui.monday, t.payload, true); t.used++; }); },
+  "publish": d => run(() => { planOf(S, ui.enroll, ui.monday).published = d.v === "1"; render(); }),
+  "save-plan": () => run(() => { const p = planOf(S, ui.enroll, ui.monday);
+    p.title = val("p-title").trim(); p.notes = val("p-notes"); p.reviewAt = val("p-review") || null; p.intro = val("p-intro");
+    clearDrafts("p-"); toast("Настройки недели сохранены.", "ok"); render(); }),
+  "delete-plan": () => confirmBox("Удалить весь план недели со всеми заданиями, ответами и оценками?", () => run(() => {
+    const p = planOf(S, ui.enroll, ui.monday); deletePlanAssignments(S, p.id); S.plans = S.plans.filter(x => x !== p); render(); })),
+  "copy-week": () => { const src = planOf(S, ui.enroll, ui.monday);
+    pickTarget("Копировать неделю", (t, replace) => { if (t.enroll === ui.enroll && t.monday === ui.monday) throw new Error("Это та же самая неделя.");
+      materialize(S, t.enroll, t.monday, stripPayload(S, src), replace); toast("Неделя скопирована.", "ok"); }, ui.enroll, addDays(ui.monday, 7)); },
+  "save-template": () => { const p = planOf(S, ui.enroll, ui.monday);
+    form("Сохранить неделю как шаблон", () => `<div class="muted">Шаблон — это снимок недели. Дальнейшие правки недели его не изменят. Шаблон с тем же названием перезапишется.</div>` + field("Название", inp("f-name", p.title)) + field("Описание", `<textarea class="input" id="f-desc"></textarea>`), "Сохранить", () => {
+      const name = val("f-name").trim(); if (!name) throw new Error("Нужно название шаблона.");
+      const ex = S.templates.find(t => t.tutor === S.session && t.name === name);
+      const data = { payload: stripPayload(S, p), desc: val("f-desc"), updated: TODAY };
+      if (ex) Object.assign(ex, data); else S.templates.push({ id: uid(), tutor: S.session, name, used: 0, ...data });
+      toast("Шаблон сохранён.", "ok"); }); },
+  "sel": (d, el, ev) => { ev.stopPropagation(); el.checked ? ui.selected.add(d.id) : ui.selected.delete(d.id); render(); },
+  "move-sel": () => run(() => { if (!ui.selected.size) throw new Error("Отметьте задания галочками."); const day = +val("move-day");
+    S.asg.filter(a => ui.selected.has(a.id)).forEach(a => a.day = day); render(); }),
+  "del-sel": () => { if (!ui.selected.size) return toast("Отметьте задания галочками.", "warn");
+    confirmBox(`Удалить ${plural(ui.selected.size, "задание", "задания", "заданий")} вместе с упражнениями?`, () => run(() => {
+      const ids = [...ui.selected]; S.asg = S.asg.filter(a => !ids.includes(a.id));
+      for (const a of S.asg) if (ids.includes(a.repeatOf)) a.repeatOf = null;
+      for (const f of S.fires) if (ids.includes(f.created)) f.created = null;
+      ui.selected.clear(); render(); })); },
+  "shift": d => run(() => { const p = planOf(S, ui.enroll, ui.monday), items = asgOf(p), delta = +d.d;
+    if (items.some(a => a.day + delta < 0 || a.day + delta > 6)) throw new Error("Нельзя: часть заданий выйдет за пределы недели.");
+    items.forEach(a => a.day += delta); render(); }),
+  "q-add": () => run(() => { const t = val("q-new").trim(); if (!t) throw new Error("Напишите вопрос.");
+    planOf(S, ui.enroll, ui.monday).questions.push({ id: uid(), text: t, asked: false }); clearDrafts("q-new"); render(); }),
+  "q-ask": (d, el) => { planOf(S, ui.enroll, ui.monday).questions.find(q => q.id === d.id).asked = el.checked; save(); },
+  "q-del": d => run(() => { const p = planOf(S, ui.enroll, ui.monday); p.questions = p.questions.filter(q => q.id !== d.id); render(); }),
+  "new-asg": d => { const p = planOf(S, ui.enroll, ui.monday), a = newAsg(p.id, +d.day || 0, {}); a.id = null; a.title = ""; assignmentModal(a); },
+  "edit-asg": d => assignmentModal(S.asg.find(a => a.id === d.id)),
+  "mkind": () => { const k = val("f-mkind"), cur = val("f-mission");
+    if (!cur || Object.values(MISSIONS).some(m => m[1] === cur)) { drafts["f-mission"] = MISSIONS[k][1]; applyDrafts(); } },
+  "asg-save": () => run(() => {
+    const m = modals[modals.length - 1], x = m.asg, min = +val("f-min");
+    if (!val("f-title").trim()) throw new Error("Нужен заголовок.");
+    if (!(min >= 0 && min <= 600)) throw new Error("«Минут» — нужно число от 0 до 600.");
+    const data = { day: +val("f-day"), title: val("f-title").trim(), url: val("f-url").trim(), desc: val("f-desc").trim(), missionKind: val("f-mkind"), mission: val("f-mission").trim(), minutes: min };
+    if (x.id && S.asg.includes(x)) Object.assign(x, data);
+    else { const a = { ...x, ...data, id: uid() }; S.asg.push(a); m.asg = a; }
+    m.title = "Задание: " + m.asg.title; clearDrafts("f-"); renderModals(); render(); toast("Задание сохранено.", "ok");
+  }),
+  "asg-close": () => { closeModal(); render(); },
+  "ex-new": () => exerciseModal(modals[modals.length - 1].asg, null),
+  "ex-edit": d => { const a = modals[modals.length - 1].asg; exerciseModal(a, a.exercises.find(e => e.id === d.id)); },
+  "ex-del": d => { const a = modals[modals.length - 1].asg; confirmBox("Удалить упражнение вместе с ответами ученика?", () => { a.exercises = a.exercises.filter(e => e.id !== d.id); save(); renderModals(); render(); }); },
+  "ex-kind": () => { const m = modals[modals.length - 1]; m.ex.kind = val("f-kind"); drafts["f-kind"] = m.ex.kind; renderModals(); },
+  "ex-save": () => run(() => {
+    const m = modals[modals.length - 1], x = m.ex, k = val("f-kind"), c = x.cfg;
+    x.kind = k; x.instruction = val("f-instr").trim(); x.prompt = val("f-prompt"); x.audio = val("f-audio") || null;
+    if (!x.prompt.trim() && k !== "speak") throw new Error("Нужен текст упражнения.");
+    if (k === "gap" && !parseGaps(x.prompt).blanks.length) throw new Error("В тексте нет ни одного {{пропуска}}.");
+    if (k === "open") { const n = +val("f-minw"); if (!(n >= 0 && n <= 500)) throw new Error("«Минимум слов» — нужно число от 0 до 500."); c.minWords = n; c.sample = val("f-sample").trim(); }
+    if (k === "theses") {
+      for (const id of ["f-s1", "f-s2"]) if (val(id).trim() && !/^\d{1,2}(:\d{2}){1,2}$/.test(val(id).trim())) throw new Error(`Не понял таймкод «${val(id)}». Формат: 13:23 или 1:02:11.`);
+      c.segStart = val("f-s1").trim(); c.segEnd = val("f-s2").trim(); c.minTheses = +val("f-tmin") || 0; c.maxTheses = +val("f-tmax") || 0;
+      if (c.maxTheses && c.minTheses > c.maxTheses) throw new Error("Минимум тезисов больше максимума.");
+      c.reference = val("f-ref").split("\n").map(s => s.trim().replace(/^[-•*]\s*/, "")).filter(Boolean);
+    }
+    if (k === "speak") c.transcript = val("f-trans").trim();
+    const att = val("f-att").trim(); c.attempts = att === "" ? null : +att;
+    if (m.orig) Object.assign(m.orig, x); else m.a.exercises.push(x);
+    closeModal(); clearDrafts("f-"); renderModals(); render();
+  }),
+  "rule-new": () => ruleModal(modals[modals.length - 1].asg, null),
+  "rule-edit": d => { const a = modals[modals.length - 1].asg; ruleModal(a, a.rules.find(r => r.id === d.id)); },
+  "rule-del": d => { const a = modals[modals.length - 1].asg; a.rules = a.rules.filter(r => r.id !== d.id); save(); renderModals(); },
+  "tutor-comment": d => run(() => { const a = S.asg.find(x => x.id === d.asg), x = a.exercises.find(e => e.id === d.x), t = x.attempts.find(t => t.no === +d.n);
+    t.comment = val(`tc-${x.id}-${t.no}`).trim(); toast("Комментарий сохранён — ученик увидит его под своим ответом.", "ok"); render(); }),
+  "fires-seen": () => run(() => { S.fires.forEach(f => f.seen = true); render(); }),
+  /* templates, sandbox, library, wod */
+  "tpl-apply": d => { const t = S.templates.find(x => x.id === d.id);
+    pickTarget(`Применить «${t.name}»`, (tg, replace) => { materialize(S, tg.enroll, tg.monday, t.payload, replace); t.used++; toast("Неделя создана. Откройте ученика → «План недели».", "ok"); }); },
+  "tpl-rename": d => { const t = S.templates.find(x => x.id === d.id);
+    form("Шаблон", () => field("Название", inp("f-name", t.name)) + field("Описание", `<textarea class="input" id="f-desc">${esc(t.desc)}</textarea>`), "Сохранить", () => {
+      const n = val("f-name").trim(); if (!n) throw new Error("Нужно название.");
+      if (S.templates.some(x => x !== t && x.tutor === t.tutor && x.name === n)) throw new Error("Шаблон с таким названием уже есть.");
+      t.name = n; t.desc = val("f-desc"); t.updated = TODAY; }); },
+  "tpl-del": d => { const t = S.templates.find(x => x.id === d.id); confirmBox(`Удалить шаблон «${t.name}»? Недели, созданные из него, останутся.`, () => { S.templates = S.templates.filter(x => x !== t); save(); render(); }); },
+  "sb-parse": () => { ui.sandbox.text = val("sb-text"); ui.sandbox.parsed = parseWeek(ui.sandbox.text); render(); },
+  "sb-example": () => { ui.sandbox.text = EXAMPLE; drafts["sb-text"] = EXAMPLE; ui.sandbox.parsed = parseWeek(EXAMPLE); render(); },
+  "sb-clear": () => { ui.sandbox = { text: "", parsed: null }; delete drafts["sb-text"]; render(); },
+  "sb-install": () => pickTarget("Установить неделю", (t, replace) => { materialize(S, t.enroll, t.monday, ui.sandbox.parsed, replace); toast("Неделя установлена. Проверьте её у ученика во вкладке «План недели».", "ok"); }),
+  "sb-template": () => form("Сохранить как шаблон", () => field("Название", inp("f-name")), "Сохранить", () => {
+    const n = val("f-name").trim(); if (!n) throw new Error("Нужно название шаблона.");
+    const payload = clone(ui.sandbox.parsed); delete payload.warnings;
+    const ex = S.templates.find(t => t.tutor === S.session && t.name === n);
+    if (ex) Object.assign(ex, { payload, updated: TODAY }); else S.templates.push({ id: uid(), tutor: S.session, name: n, desc: "", payload, used: 0, updated: TODAY });
+    toast("Шаблон сохранён.", "ok"); }),
+  "lib-edit": d => editClip(S.media.find(m => m.id === d.id)),
+  "lib-del": d => { const c = S.media.find(m => m.id === d.id);
+    confirmBox(`Удалить «${c.title || "Аудио"}»? Упражнения, к которым оно прикреплено, останутся без аудио.`, () => {
+      S.media = S.media.filter(m => m !== c); S.asg.forEach(a => a.exercises.forEach(e => { if (e.audio === c.id) e.audio = null; })); save(); render(); }); },
+  "wod-save": () => run(() => {
+    const date = val("wd-date"), word = val("wd-word").trim(), tr = val("wd-tr").trim();
+    if (!date) throw new Error("Выберите дату."); if (!word || !tr) throw new Error("Нужны слово и перевод.");
+    S.wod = S.wod.filter(w => !(w.tutor === S.session && w.date === date));
+    S.wod.push({ id: uid(), tutor: S.session, date, word, tr, ex: val("wd-ex").trim() });
+    ui.wodEdit = null; clearDrafts("wd-"); render(); toast("Слово дня опубликовано.", "ok");
+  }),
+  "wod-edit": d => { const w = S.wod.find(x => x.id === d.id); ui.wodEdit = { ...w }; clearDrafts("wd-"); render(); },
+  "wod-del": d => run(() => { S.wod = S.wod.filter(x => x.id !== d.id); render(); }),
+};
+function saveProgress(id, done) {
+  const a = S.asg.find(x => x.id === id), p = a.progress, was = p.done;
+  if (!unlocked(a)) throw new Error("Это задание ещё не открылось.");
+  const mission = a.mission ? val(`mis-${id}`) : "", comment = val(`cm-${id}`);
+  const next = done ?? was;
+  if (next && a.mission && !a.exercises.length && !mission.trim()) throw new Error("Чтобы закрыть задание, сдайте ответ на миссию: " + a.mission);
+  Object.assign(p, { done: next, mission, comment });
+  if (next && !was) { p.doneAt = TODAY; registerActivity(S.session); evaluateDone(a); }
+  if (!next) p.doneAt = null;
+  clearDrafts(`mis-${id}`); clearDrafts(`cm-${id}`);
+}
+let pendingFile = null;
+$("#filepick").addEventListener("change", ev => {
+  const files = [...ev.target.files]; ev.target.value = "";
+  if (!pendingFile || !files.length) return;
+  const key = pendingFile.key; pendingFile = null;
+  for (const f of files) {
+    const url = URL.createObjectURL(f), probe = new Audio(url);
+    probe.addEventListener("loadedmetadata", () => {
+      const sec = Math.round(probe.duration) || 1;
+      if (key === "libfile") { addMedia(S.session, "clip", sec, url, f.name.replace(/\.[^.]+$/, "")); save(); render(); }
+      else { recorded(key, sec, url); save(); render(); }
+    });
+    probe.addEventListener("error", () => toast("Не удалось прочитать аудиофайл.", "warn"));
+  }
+});
+document.addEventListener("click", ev => {
+  const el = ev.target.closest("[data-a]");
+  if (!el || el.disabled) return;
+  const fn = A[el.dataset.a];
+  if (!fn) return;
+  if (el.tagName !== "INPUT") ev.preventDefault();
+  fn(el.dataset, el, ev);
+});
+document.addEventListener("input", ev => {
+  const t = ev.target;
+  if (t.id) drafts[t.id] = t.type === "checkbox" || t.type === "radio" ? t.checked : t.value;
+  if (t.id === "f-prompt") updatePreview();
+  if (t.id === "w-q") { ui.vocabQuery = t.value; const pos = t.selectionStart; render(); const n = $("#w-q"); n.focus(); n.setSelectionRange(pos, pos); }
+});
+document.addEventListener("change", ev => {
+  const t = ev.target, c = t.dataset.change;
+  if (t.type === "radio" && t.name === "lvl") for (const k of Object.keys(LEVELS)) drafts[`f-lvl-${k}`] = k === t.id.slice(6);
+  if (!c) return;
+  if (c === "pick-student") { ui.enroll = t.value; ui.selected.clear(); render(); }
+  else if (c === "show-inactive") { ui.showInactive = t.checked; render(); }
+  else if (c === "only-unchecked") { ui.onlyUnchecked = t.checked; render(); }
+  else if (c === "vfilter") { ui.vocabFilter = t.value; render(); }
+  else if (A[c]) A[c]();
+});
+document.addEventListener("keydown", ev => {
+  if (ev.key === "Enter" && (ev.target.id === "l-pass" || ev.target.id === "l-login")) A.login();
+  if (ev.key === "Escape" && modals.length && !modals[modals.length - 1].noClose) closeModal();
+});
+render();
+if (S.session && me().role === "student" && !S.profiles[S.session].onboarded) onboardingModal(true);
+</script>
+</body>
+</html>
